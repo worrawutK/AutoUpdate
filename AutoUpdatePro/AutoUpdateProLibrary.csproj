@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3D4E414E-8DAF-4C9D-A79B-C25F6059E4F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>AutoUpdateProLibrary</RootNamespace>
+    <AssemblyName>AutoUpdateProLibrary</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MessageDialog">
+      <HintPath>C:\Users\user099\source\repos\WebServiceLSIFlow\WCFServiceiLibrary\MessageDialog\bin\Debug\MessageDialog.dll</HintPath>
+    </Reference>
+    <Reference Include="Rohm.Common.Logging">
+      <HintPath>..\..\..\APCS_Pro\PL-Reflow\IRLA_APCS\DllSource\Rohm.Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppSettingHelper.cs" />
+    <Compile Include="CellControllerFactory.cs" />
+    <Compile Include="Control\WControllerService.cs" />
+    <Compile Include="DialogConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogConfirm.Designer.cs">
+      <DependentUpon>DialogConfirm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ApplicationCellcon.cs" />
+    <Compile Include="Model\ApplicationData.cs" />
+    <Compile Include="Model\BackupDataResult.cs" />
+    <Compile Include="Model\CoppyFileResult.cs" />
+    <Compile Include="Model\FileData.cs" />
+    <Compile Include="Model\CheckUpdateResult.cs" />
+    <Compile Include="Control\Controller.cs" />
+    <Compile Include="IControllerService.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\ResultBase.cs" />
+    <Compile Include="Model\SaveFileResult.cs" />
+    <Compile Include="Model\UpdateFileResult.cs" />
+    <Compile Include="Model\UpdateProgramResult.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateResult.cs" />
+    <EmbeddedResource Include="DialogConfirm.resx">
+      <DependentUpon>DialogConfirm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\iron man gif images on mithileshjoshi.blogspot.com jarvis shell commands %2810%29.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arc iron man.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1510618217_preview_414e2f14bbfb7adeb50c19631169e69b.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cara ganti bootanimation tomsher.blogspot.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lazy-loading-gif.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Plugin_Affects_Loading_Speed.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
