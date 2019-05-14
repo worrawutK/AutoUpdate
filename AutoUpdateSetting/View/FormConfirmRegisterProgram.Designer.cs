@@ -117,6 +117,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormConfirmRegisterProgram";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormConfirmRegisterProgram";
             this.Load += new System.EventHandler(this.FormConfirmRegisterProgram_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCancel)).EndInit();

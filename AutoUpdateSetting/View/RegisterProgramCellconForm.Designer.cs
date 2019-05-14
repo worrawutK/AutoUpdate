@@ -159,6 +159,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "RegisterProgramCellconForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RegisterProgramCellcon";
             this.Load += new System.EventHandler(this.RegisterProgramCellconForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegister)).EndInit();

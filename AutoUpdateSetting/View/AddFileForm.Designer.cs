@@ -260,6 +260,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AddFileForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AddFileForm";
             this.Load += new System.EventHandler(this.AddFileForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAdditem)).EndInit();

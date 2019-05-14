@@ -153,6 +153,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormFileList";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormFileList";
             this.Load += new System.EventHandler(this.FormFileList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSelect)).EndInit();

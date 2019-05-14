@@ -117,9 +117,9 @@
             this.labelHeader.ForeColor = System.Drawing.Color.White;
             this.labelHeader.Location = new System.Drawing.Point(12, 12);
             this.labelHeader.Name = "labelHeader";
-            this.labelHeader.Size = new System.Drawing.Size(295, 39);
+            this.labelHeader.Size = new System.Drawing.Size(314, 39);
             this.labelHeader.TabIndex = 14;
-            this.labelHeader.Text = "Manage Machine";
+            this.labelHeader.Text = "Manage Machines";
             // 
             // pictureBoxRegister
             // 
@@ -165,6 +165,7 @@
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "SettingProgramMachineForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SettingProgramMachine";
             this.Load += new System.EventHandler(this.SettingProgramMachineForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

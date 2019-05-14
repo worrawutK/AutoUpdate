@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.labelHeader = new System.Windows.Forms.Label();
             this.pictureBoxExit = new System.Windows.Forms.PictureBox();
             this.pictureBoxSettingProgramMachine = new System.Windows.Forms.PictureBox();
             this.pictureBoxRegisterProgramCellCon = new System.Windows.Forms.PictureBox();
             this.pictureBoxRegisterProgram = new System.Windows.Forms.PictureBox();
             this.pictureBoxAddFile = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.labelHeader = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSettingProgramMachine)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegisterProgramCellCon)).BeginInit();
@@ -42,6 +42,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAddFile)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // labelHeader
+            // 
+            this.labelHeader.AutoSize = true;
+            this.labelHeader.BackColor = System.Drawing.Color.Transparent;
+            this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.labelHeader.ForeColor = System.Drawing.Color.White;
+            this.labelHeader.Location = new System.Drawing.Point(22, 21);
+            this.labelHeader.Name = "labelHeader";
+            this.labelHeader.Size = new System.Drawing.Size(677, 55);
+            this.labelHeader.TabIndex = 3;
+            this.labelHeader.Text = "Cellcon Management System";
             // 
             // pictureBoxExit
             // 
@@ -129,18 +141,6 @@
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
-            // labelHeader
-            // 
-            this.labelHeader.AutoSize = true;
-            this.labelHeader.BackColor = System.Drawing.Color.Transparent;
-            this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.labelHeader.ForeColor = System.Drawing.Color.White;
-            this.labelHeader.Location = new System.Drawing.Point(22, 21);
-            this.labelHeader.Name = "labelHeader";
-            this.labelHeader.Size = new System.Drawing.Size(677, 55);
-            this.labelHeader.TabIndex = 3;
-            this.labelHeader.Text = "Cellcon Management System";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,10 +153,10 @@
             this.Controls.Add(this.pictureBoxRegisterProgram);
             this.Controls.Add(this.pictureBoxAddFile);
             this.Controls.Add(this.pictureBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Cellcon Management System";
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSettingProgramMachine)).EndInit();
