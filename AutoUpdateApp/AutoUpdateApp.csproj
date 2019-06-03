@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>IconCellcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -77,6 +80,11 @@
       <Project>{3d4e414e-8daf-4c9d-a79b-c25f6059e4f8}</Project>
       <Name>AutoUpdateProLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IconCellcon.ico" />
+    <Content Include="Icons-Land-Vista-Hardware-Devices-Hardware-Chip.ico" />
+    <Content Include="Treetog-Junior-Memory-chip.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

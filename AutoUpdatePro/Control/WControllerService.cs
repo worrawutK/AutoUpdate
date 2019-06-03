@@ -86,7 +86,7 @@ namespace AutoUpdateProLibrary.Control
                     Directory.CreateDirectory(path);
                 }
                 //FileMode.Append Overriable
-                using (var fs = new FileStream(fileName, FileMode.Append, FileAccess.Write))
+                using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
                 {
                     fs.Write(byteArray, 0, byteArray.Length);
                     return new ResultBase(true, "");
@@ -169,58 +169,10 @@ namespace AutoUpdateProLibrary.Control
               //  File.Copy(Path.Combine(fileData.FileDirectory, fileData.FileName), Path.Combine(fileData.FileDirectory, fileData.FileName));
             }
             // File.Copy(Path.Combine("path1", "path2"), Path.Combine("path1", "path2"), true);
-            SaveDBxHistory(fileDatas);
+
             return new UpdateProgramResult(true,"",MethodBase.GetCurrentMethod().Name);
         }
 
-  
-        private void SaveDBxHistory(List<FileData> fileDatas)
-        {
-            //using (SqlConnection conn = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString")))
-            //{
-            //    conn.Open();
-            //    SqlCommand command = conn.CreateCommand();
-            //    SqlTransaction transaction;
-
-            //    // Start a local transaction.
-            //    transaction = conn.BeginTransaction("SampleTransaction");
-
-            //    // Must assign both transaction object and connection
-            //    // to Command object for a pending local transaction
-            //    command.Connection = conn;
-            //    command.Transaction = transaction;
-
-            //    try
-            //    {
-                      
-            //            command.CommandText = "insert into [APCSProDB].[cellcon].[files] ([name],[binary_id],[version],[directory]) values (@name,@binary_id,@version,@directory); SELECT SCOPE_IDENTITY()";
-            //            command.Parameters.AddWithValue("@file", fileData.Data);
-            //            var fileId = command.ExecuteScalar();
-            //            //fileData.BinaryId = int.Parse(fileId.ToString());
-            
-            //        transaction.Commit();
-            //    }
-            //    catch (Exception)
-            //    {
-            //        // Attempt to roll back the transaction.
-            //        try
-            //        {
-            //            transaction.Rollback();
-            //        }
-            //        catch (Exception)
-            //        {
-            //            // This catch block will handle any errors that may have occurred
-            //            // on the server that would cause the rollback to fail, such as
-            //            // a closed connection.
-            //            //Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
-            //            //Console.WriteLine("  Message: {0}", ex2.Message);
-                        
-            //        }
-                        
-            //    }
-            //    conn.Close();
-            //}
-        }
         public CheckUpdateResult CheckUpdate(List<FileData> newFileDatas, List<FileData> oldFileDatas)
         {
             if (oldFileDatas == null || oldFileDatas.Count == 0)
@@ -276,7 +228,57 @@ namespace AutoUpdateProLibrary.Control
 
         }
 
-     
+        public bool SaveHistoryToDb(int? machineId, int? applicationSetId)
+        {
+            using (SqlConnection conn = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString")))
+            {
+                conn.Open();
+                SqlCommand command = conn.CreateCommand();
+                SqlTransaction transaction;
+
+                // Start a local transaction.
+                transaction = conn.BeginTransaction("SampleTransaction");
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+                command.Transaction = transaction;
+
+                    try
+                    {
+                        command.CommandText = "insert into [APCSProDB].[cellcon].[application_histories] ([machine_id],[application_set_id],[updated_at]) values (@machine_id,@application_set_id, GETDATE());";
+                        command.Parameters.AddWithValue("@machine_id", machineId);
+                        command.Parameters.AddWithValue("@application_set_id", applicationSetId);
+                        var fileId = command.ExecuteScalar();
+                        //fileData.BinaryId = int.Parse(fileId.ToString());
+
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        // Attempt to roll back the transaction.
+                        try
+                        {
+                            transaction.Rollback();
+                        }
+                        catch (Exception)
+                        {
+                            // This catch block will handle any errors that may have occurred
+                            // on the server that would cause the rollback to fail, such as
+                            // a closed connection.
+                            //Console.WriteLine("Rollback Exception Type: {0}", ex2.GetType());
+                            //Console.WriteLine("  Message: {0}", ex2.Message);
+
+                        }
+                    return false;
+                    }
+             
+                conn.Close();
+            }
+            return true;
+        }
+
+
         #endregion
 
     }

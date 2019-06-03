@@ -18,4 +18,5 @@ namespace AutoUpdateApp
             Application.Run(new MainForm());
         }
     }
+
 }

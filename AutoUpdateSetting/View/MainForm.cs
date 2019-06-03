@@ -8,38 +8,102 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using AutoUpdateSetting.View;
 namespace AutoUpdateSetting
 {
     public partial class MainForm : Form
     {
+        //private MenuProgram c_MenuProgram;
+
+        private MenuProgram c_MenuFrom;
+        public MenuProgram MenuFrom
+        {
+            get { return c_MenuFrom; }
+            set {
+                c_MenuFrom = value;
+                switch (MenuFrom)
+                {
+                    case MenuProgram.DEFAULT:
+                        pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files;
+                        pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application;
+                        pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
+                        pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
+                        break;
+                    case MenuProgram.MANAGEFILES:
+                        pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files_cursor;
+                        pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application;
+                        pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
+                        pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
+                        break;
+                    case MenuProgram.MANAGEAPPLICATION:
+                        pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files;
+                        pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application_cursor;
+                        pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
+                        pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
+                        break;
+                    case MenuProgram.MANAGECELLCON:
+                        pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files;
+                        pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application;
+                        pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon_cursor;
+                        pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
+                        break;
+                    case MenuProgram.MANAGEMACHINES:
+                        pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files;
+                        pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application;
+                        pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
+                        pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine_cursor;
+                        break;
+                }
+            }
+        }
+
         public MainForm()
         {
             InitializeComponent();
+            MenuFrom = MenuProgram.DEFAULT;
         }
 
         private void pictureBoxAddFile_Click(object sender, EventArgs e)
         {
-            AddFileForm addFileForm = new AddFileForm();
-            addFileForm.ShowDialog();
+            MenuFrom = MenuProgram.MANAGEFILES;
+            panelMain.Controls.Clear();
+            ManageFiles manageFiles = new ManageFiles(this);
+            panelMain.Controls.Add(manageFiles);
+            //AddFileForm addFileForm = new AddFileForm();
+            //addFileForm.ShowDialog();
         }
 
         private void pictureBoxRegisterProgram_Click(object sender, EventArgs e)
         {
-            RegisterProgramForm registerProgramForm = new RegisterProgramForm();
-            registerProgramForm.ShowDialog();
+            MenuFrom = MenuProgram.MANAGEAPPLICATION;
+            ManageApplication manageApplication = new ManageApplication(this);
+            panelMain.Controls.Clear();
+            panelMain.Controls.Add(manageApplication);
+            //RegisterProgramForm registerProgramForm = new RegisterProgramForm();
+            //registerProgramForm.ShowDialog();
         }
 
         private void pictureBoxRegisterProgramCellCon_Click(object sender, EventArgs e)
         {
-            RegisterProgramCellconForm registerProgramCellconForm = new RegisterProgramCellconForm();
-            registerProgramCellconForm.ShowDialog();
+            MenuFrom = MenuProgram.MANAGECELLCON;
+            ManageCellcon manageCellcon = new ManageCellcon(this);
+            panelMain.Controls.Clear();
+            panelMain.Controls.Add(manageCellcon);
+
+            //RegisterProgramCellconForm registerProgramCellconForm = new RegisterProgramCellconForm();
+            //registerProgramCellconForm.ShowDialog();
         }
 
         private void pictureBoxSettingProgramMachine_Click(object sender, EventArgs e)
         {
-            SettingProgramMachineForm setting = new SettingProgramMachineForm();
-            setting.ShowDialog();
+            MenuFrom = MenuProgram.MANAGEMACHINES;
+            ManageMachines manageMachines = new ManageMachines(this);
+            panelMain.Controls.Clear();
+            panelMain.Controls.Add(manageMachines);
+
+
+            //SettingProgramMachineForm setting = new SettingProgramMachineForm();
+            //setting.ShowDialog();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -47,35 +111,60 @@ namespace AutoUpdateSetting
             //pictureBox1.Controls.Add(pictureBoxAddFile);
             //pictureBoxAddFile.Location = new Point(24, 12);
 
-            pictureBoxAddFile.Parent = pictureBox1;
-            pictureBoxRegisterProgram.Parent = pictureBox1;
-            pictureBoxRegisterProgramCellCon.Parent = pictureBox1;
-            pictureBoxSettingProgramMachine.Parent = pictureBox1;
+            pictureBoxManageFiles.Parent = pictureBox1;
+            pictureBoxManageApplication.Parent = pictureBox1;
+            pictureBoxManageCellcon.Parent = pictureBox1;
+            pictureBoxManageMachines.Parent = pictureBox1;
             pictureBoxExit.Parent = pictureBox1;
             labelHeader.Parent = pictureBox1;
+            panelMain.Parent = pictureBox1;
+
         }
 
         private void pictureBoxExit_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+        public enum MenuProgram
+        {
+            DEFAULT,
+            MANAGEFILES,
+            MANAGEAPPLICATION,
+            MANAGECELLCON,
+            MANAGEMACHINES
+            
+        }
+        private bool CheckMenu(MenuProgram menuProgram)
+        {
+            if (menuProgram == MenuFrom)
+                return false;
 
+            return true;
+        }
         #region View
         private void pictureBoxSettingProgramMachine_MouseLeave(object sender, EventArgs e)
         {
-            pictureBoxSettingProgramMachine.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
+            if (!CheckMenu(MenuProgram.MANAGEMACHINES))
+                return;
+            pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine;
         }
         private void pictureBoxRegisterProgramCellCon_MouseLeave(object sender, EventArgs e)
         {
-            pictureBoxRegisterProgramCellCon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
+            if (!CheckMenu(MenuProgram.MANAGECELLCON))
+                return;
+            pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon;
         }
         private void pictureBoxRegisterProgram_MouseLeave(object sender, EventArgs e)
         {
-            pictureBoxRegisterProgram.Image = AutoUpdateSetting.Properties.Resources.manage_application;
+            if (!CheckMenu(MenuProgram.MANAGEAPPLICATION))
+                return;
+            pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application;
         }
         private void pictureBoxAddFile_MouseLeave(object sender, EventArgs e)
         {
-            pictureBoxAddFile.Image = AutoUpdateSetting.Properties.Resources.manage_files;
+            if (!CheckMenu(MenuProgram.MANAGEFILES))
+                return;
+            pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files;
         }
 
         private void pictureBoxExit_MouseLeave(object sender, EventArgs e)
@@ -85,20 +174,28 @@ namespace AutoUpdateSetting
 
         private void pictureBoxSettingProgramMachine_MouseHover(object sender, EventArgs e)
         {
-            pictureBoxSettingProgramMachine.Image = AutoUpdateSetting.Properties.Resources.manage_machine_cursor;
+            if (!CheckMenu(MenuProgram.MANAGEMACHINES))
+                return;
+            pictureBoxManageMachines.Image = AutoUpdateSetting.Properties.Resources.manage_machine_cursor;
         }
 
         private void pictureBoxRegisterProgramCellCon_MouseHover(object sender, EventArgs e)
         {
-            pictureBoxRegisterProgramCellCon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon_cursor;
+            if (!CheckMenu(MenuProgram.MANAGECELLCON))
+                return;
+            pictureBoxManageCellcon.Image = AutoUpdateSetting.Properties.Resources.manage_cellcon_cursor;
         }
         private void pictureBoxRegisterProgram_MouseHover(object sender, EventArgs e)
         {
-            pictureBoxRegisterProgram.Image = AutoUpdateSetting.Properties.Resources.manage_application_cursor;
+            if (!CheckMenu(MenuProgram.MANAGEAPPLICATION))
+                return;
+            pictureBoxManageApplication.Image = AutoUpdateSetting.Properties.Resources.manage_application_cursor;
         }
         private void pictureBoxAddFile_MouseHover(object sender, EventArgs e)
         {
-            pictureBoxAddFile.Image = AutoUpdateSetting.Properties.Resources.manage_files_cursor;
+            if (!CheckMenu(MenuProgram.MANAGEFILES))
+                return;
+            pictureBoxManageFiles.Image = AutoUpdateSetting.Properties.Resources.manage_files_cursor;
 
         }
         private void pictureBoxExit_MouseHover(object sender, EventArgs e)

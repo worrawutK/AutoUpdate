@@ -14,6 +14,8 @@ namespace AutoUpdateProLibrary
         CheckUpdateResult CheckUpdate(List<FileData> newFileDatas, List<FileData> oldFileDatas);
         UpdateResult StartProgram(List<FileData> fileDatas);
         UpdateProgramResult UpdateProgram(List<FileData> newFileDatas);
+
+        bool SaveHistoryToDb(int? machineId,int? applicationSetId);
     }
    
 }

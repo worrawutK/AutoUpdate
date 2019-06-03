@@ -45,11 +45,11 @@ namespace AutoUpdateProLibrary
                 List<FileData> newFileDatas = c_ControllerService.GetFiles(c_CellIp);
 
                 //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
-                var data = newFileDatas.Select(x => new { x.ApplicationSetId }).Distinct().ToList();
-                if (data.Count > 1)
+                var datas = newFileDatas.Select(x => new { x.ApplicationSetId,x.MachineId }).Distinct().ToList();
+                if ((datas.Select(x =>new { x.ApplicationSetId }).Distinct().ToList()).Count > 1)
                 {
                     return new UpdateFileResult(false,"โปรแกรม Machine ไม่ตรงกัน กรุณาติดต่อ System เพื่อเช็คโปรแกรมของ Machine  \nCellconIP:" + AppSettingHelper.GetAppSettingsValue("CellConIp"), c_Log, MethodBase.GetCurrentMethod().Name, "GetFiles");
-                }else if (data.Count == 0)
+                }else if (datas.Count == 0)
                 {
                     return new UpdateFileResult(false, "Cellcon Ip:" + c_CellIp + " ยังไม่ได้ถูก Set Machine ไว้ กรุณาติดต่อ System ", c_Log, MethodBase.GetCurrentMethod().Name, "GetFiles");
                 }
@@ -92,7 +92,14 @@ namespace AutoUpdateProLibrary
                 {
                     return new UpdateFileResult(false, updateProgramResult.Cause, c_Log, MethodBase.GetCurrentMethod().Name, updateProgramResult.SubFunctionName);
                 }
-              
+                //save history to DbApcsPro
+                foreach (var item in datas)
+                {
+                    c_ControllerService.SaveHistoryToDb(item.MachineId,item.ApplicationSetId);
+                }
+               
+
+
                 c_ControllerService.SaveFile(c_FileDatas, path, fileName);
 
                 //Start Program
@@ -106,6 +113,7 @@ namespace AutoUpdateProLibrary
             }
             
         }
+        
         //private List<Model.ApplicationCellcon> GetFile(string path)
         //{
           
