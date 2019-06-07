@@ -126,6 +126,12 @@ namespace AutoUpdateProLibrary.Control
                     if (processes.Count() == 0)
                     {
                         Process.Start(Path.Combine(file.FileDirectory, file.FileName));
+                        //if (WriteBatFile(Path.Combine(file.FileDirectory, file.FileName.Replace(".exe", ".bat")), Path.Combine(file.FileDirectory, file.FileName)))
+                        //{
+                        //    Process.Start(Path.Combine(file.FileDirectory, file.FileName.Replace(".exe", ".bat")));
+                        //}
+
+                        
                     }
                    
                 }
@@ -139,6 +145,40 @@ namespace AutoUpdateProLibrary.Control
 
         }
 
+        //private bool WriteBatFile(string path,string pathProgram)
+        //{
+        //    string writePath = "";
+        //    try
+        //    {
+               
+        //        foreach (var item in pathProgram.Split(Path.DirectorySeparatorChar))
+        //        {
+        //            string combine = @"\";
+        //            if (string.IsNullOrEmpty(writePath))
+        //            {
+        //                combine = "";
+        //            }
+        //            if (item.Contains(" "))
+        //            {
+        //                writePath = writePath + combine + @"""" + item + @"""";
+        //            }
+        //            else
+        //            {
+        //                writePath = writePath + combine + item;
+        //            }
+        //        }
+        //        writePath = "start " + writePath;
+        //        StreamWriter w = new StreamWriter(path);
+        //        w.WriteLine("echo off");
+        //        w.WriteLine(writePath);
+        //        w.Close();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return false;
+        //    }
+        //}
         public UpdateProgramResult UpdateProgram(List<FileData> fileDatas)
         {
             var fileList = fileDatas.Select(x => new { x.FileName ,x.FileBinary,x.FileDirectory }).Distinct().ToList();

@@ -103,12 +103,13 @@ namespace AutoUpdateProLibrary
                         return;
                     }
                 }
-
+                Log.WriteMessage("PingHost:ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") + " ได้");
                 MessageBoxDialog.ShowMessageDialog("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
                     " ได้", "AutoUpdate");
             }
             catch (Exception ex)
             {
+                Log.WriteMessage("UpdateFile:" + ex.Message.ToString());
                 MessageBoxDialog.ShowMessageDialog("UpdateFile", ex.Message.ToString(), "Exception");
             }
            
@@ -137,7 +138,8 @@ namespace AutoUpdateProLibrary
             }
             catch (Exception ex)
             {
-                MessageBoxDialog.ShowMessageDialog("Process.Start AutoUpdateMe", ex.Message.ToString(), "Exception");
+                Log.WriteMessage("Process.Start AutoUpdateMe:" + ex.Message.ToString());
+                //MessageBoxDialog.ShowMessageDialog("Process.Start AutoUpdateMe", ex.Message.ToString(), "Exception");
             }
          
             Thread thread2 = new Thread(ClossProgram);
