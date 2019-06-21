@@ -67,7 +67,7 @@ namespace AutoUpdateProLibrary
                     {
                         return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, checkUpdateResult.Cause);
                     }
-                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, "OK");
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
                 }
 
                 //Backup File
@@ -99,7 +99,7 @@ namespace AutoUpdateProLibrary
                 //Start Program
                 UpdateResult updateResult = c_ControllerService.StartProgram(c_FileDatas);
 
-                return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, "OK");
+                return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
             }
             catch (Exception ex)
             {

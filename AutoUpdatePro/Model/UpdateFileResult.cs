@@ -20,7 +20,14 @@ namespace AutoUpdateProLibrary.Model
         //}
         public UpdateFileResult(string functionName,string cause)
         {
+            this.IsPass = false;
+            this.Cause = cause;
             Log.WriteMessage(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "|" + functionName + "|" + cause);
+        }
+        public UpdateFileResult(string functionName)
+            :this(functionName,"OK")
+        {
+            this.IsPass = true;
         }
     }
 }

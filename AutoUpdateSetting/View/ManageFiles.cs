@@ -65,12 +65,12 @@ namespace AutoUpdateSetting.View
 
         private void PictureBoxAdditem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBoxDirectory.Text) || string.IsNullOrEmpty(textBoxFileVersion.Text) || string.IsNullOrEmpty(textBoxPathFile.Text))
+            if (string.IsNullOrEmpty(comboBoxDirectory.Text) || string.IsNullOrEmpty(textBoxFileVersion.Text) || string.IsNullOrEmpty(textBoxPathFile.Text))
             {
                 return;
             }
             FileData fileData = new FileData();
-            fileData.Directory = textBoxDirectory.Text;
+            fileData.Directory = comboBoxDirectory.Text;
             fileData.FileVersion = textBoxFileVersion.Text;
             switch (c_Status)
             {

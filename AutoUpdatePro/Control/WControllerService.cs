@@ -186,7 +186,9 @@ namespace AutoUpdateProLibrary.Control
             {
                 if (fileData.FileName.Contains(".exe") && !fileData.FileName.Contains(".config"))
                 {
-                //var versionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(fileData.FileDirectory, fileData.FileName.Replace(".exe","")));
+                   // FileInfo fi = new FileInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
+                   // FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
+                   //var versionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
                 peocessCheck:
                     Process[] processes = Process.GetProcessesByName(fileData.FileName.Replace(".exe", ""));
                     if (processes.Count() >= 1)
@@ -199,15 +201,17 @@ namespace AutoUpdateProLibrary.Control
                         goto peocessCheck;
                     }
                 }
-                  
-             
-                ResultBase result = ByteArrayToFile(Path.Combine(fileData.FileDirectory,fileData.FileName), fileData.FileBinary);
-                if (!result.IsPass)
-                {
-                    return new UpdateProgramResult(false, result.Cause,MethodBase.GetCurrentMethod().Name);
-                }
               //  File.Copy(Path.Combine(fileData.FileDirectory, fileData.FileName), Path.Combine(fileData.FileDirectory, fileData.FileName));
             }
+            foreach (FileData fileData in fileDatas)
+            {
+                ResultBase result = ByteArrayToFile(Path.Combine(fileData.FileDirectory, fileData.FileName), fileData.FileBinary);
+                if (!result.IsPass)
+                {
+                    return new UpdateProgramResult(false, result.Cause, MethodBase.GetCurrentMethod().Name);
+                }
+            }
+         
             // File.Copy(Path.Combine("path1", "path2"), Path.Combine("path1", "path2"), true);
 
             return new UpdateProgramResult(true,"",MethodBase.GetCurrentMethod().Name);

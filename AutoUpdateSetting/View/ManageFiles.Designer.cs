@@ -32,7 +32,6 @@
             this.textBoxFileVersion = new System.Windows.Forms.TextBox();
             this.buttonBrowseFile = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.textBoxDirectory = new System.Windows.Forms.TextBox();
             this.textBoxPathFile = new System.Windows.Forms.TextBox();
             this.buttonBrowseServer = new System.Windows.Forms.Button();
             this.pictureBoxUploadFiles = new System.Windows.Forms.PictureBox();
@@ -45,6 +44,7 @@
             this.labelFile = new System.Windows.Forms.Label();
             this.labelPathFile = new System.Windows.Forms.Label();
             this.labelPath = new System.Windows.Forms.Label();
+            this.comboBoxDirectory = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxUploadFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAdditem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileDataBindingSource)).BeginInit();
@@ -73,14 +73,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // textBoxDirectory
-            // 
-            this.textBoxDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.textBoxDirectory.Location = new System.Drawing.Point(179, 164);
-            this.textBoxDirectory.Name = "textBoxDirectory";
-            this.textBoxDirectory.Size = new System.Drawing.Size(376, 26);
-            this.textBoxDirectory.TabIndex = 16;
             // 
             // textBoxPathFile
             // 
@@ -219,15 +211,27 @@
             this.labelPath.TabIndex = 25;
             this.labelPath.Text = "Path";
             // 
+            // comboBoxDirectory
+            // 
+            this.comboBoxDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.comboBoxDirectory.FormattingEnabled = true;
+            this.comboBoxDirectory.Items.AddRange(new object[] {
+            "D:\\Apcs Pro\\CellconCommon",
+            "D:\\Apcs Pro\\LPM"});
+            this.comboBoxDirectory.Location = new System.Drawing.Point(179, 166);
+            this.comboBoxDirectory.Name = "comboBoxDirectory";
+            this.comboBoxDirectory.Size = new System.Drawing.Size(376, 28);
+            this.comboBoxDirectory.TabIndex = 28;
+            // 
             // ManageFiles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Controls.Add(this.comboBoxDirectory);
             this.Controls.Add(this.textBoxFileVersion);
             this.Controls.Add(this.buttonBrowseFile);
-            this.Controls.Add(this.textBoxDirectory);
             this.Controls.Add(this.textBoxPathFile);
             this.Controls.Add(this.buttonBrowseServer);
             this.Controls.Add(this.pictureBoxUploadFiles);
@@ -254,7 +258,6 @@
         private System.Windows.Forms.TextBox textBoxFileVersion;
         private System.Windows.Forms.Button buttonBrowseFile;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.TextBox textBoxDirectory;
         private System.Windows.Forms.TextBox textBoxPathFile;
         private System.Windows.Forms.Button buttonBrowseServer;
         private System.Windows.Forms.PictureBox pictureBoxUploadFiles;
@@ -267,5 +270,6 @@
         private System.Windows.Forms.Label labelFile;
         private System.Windows.Forms.Label labelPathFile;
         private System.Windows.Forms.Label labelPath;
+        private System.Windows.Forms.ComboBox comboBoxDirectory;
     }
 }
