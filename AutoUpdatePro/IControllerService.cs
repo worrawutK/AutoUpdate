@@ -8,7 +8,7 @@ namespace AutoUpdateProLibrary
     public interface IControllerService
     {
 
-        List<FileData> GetFiles(string cell_Ip);
+        List<FileData> GetFilesData(string cell_Ip);
         List<FileData> LoadFile(string path);
         SaveFileResult SaveFile(List<FileData> fileDatas,string path,string fileName);
         CheckUpdateResult CheckUpdate(List<FileData> newFileDatas, List<FileData> oldFileDatas);

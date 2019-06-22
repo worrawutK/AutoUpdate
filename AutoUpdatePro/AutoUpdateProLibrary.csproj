@@ -76,6 +76,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\FileDataInfo.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\ResultBase.cs" />
     <Compile Include="Model\SaveFileResult.cs" />

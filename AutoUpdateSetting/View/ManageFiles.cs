@@ -311,5 +311,10 @@ namespace AutoUpdateSetting.View
 
 
         }
+
+        private void ManageFiles_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -245,6 +245,7 @@
             this.Controls.Add(this.labelFile);
             this.Name = "ManageFiles";
             this.Size = new System.Drawing.Size(952, 738);
+            this.Load += new System.EventHandler(this.ManageFiles_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxUploadFiles)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAdditem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fileDataBindingSource)).EndInit();

@@ -39,7 +39,7 @@ namespace AutoUpdateProLibrary
                 c_FileDatas = c_ControllerService.LoadFile(Path.Combine(path, fileName));
 
 
-                List<FileData> newFileDatas = c_ControllerService.GetFiles(c_CellIp);
+                List<FileData> newFileDatas = c_ControllerService.GetFilesData(c_CellIp);
 
                 //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
                 var datas = newFileDatas.Select(x => new { x.ApplicationSetId,x.MachineId }).Distinct().ToList();

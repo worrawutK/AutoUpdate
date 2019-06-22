@@ -14,7 +14,7 @@ namespace AutoUpdateProLibrary.Control
 {
     public class WControllerService : IControllerService
     {
-        public List<FileData> GetFiles(string cell_Ip)
+        public List<FileData> GetFilesData(string cell_Ip)
         {
             List<FileData> fileDatasList = new List<FileData>();
             //string cell_Ip = AppSettingHelper.GetAppSettingsValue("CellConIp");
@@ -69,6 +69,66 @@ namespace AutoUpdateProLibrary.Control
                 //if (reader.Read())
                 //{
                     
+                //}
+            }
+
+            conn.Close();
+            return fileDatasList;
+        }
+        public List<FileData> GetFiles(string cell_Ip)
+        {
+            List<FileData> fileDatasList = new List<FileData>();
+            //string cell_Ip = AppSettingHelper.GetAppSettingsValue("CellConIp");
+            //GetFile from database
+            SqlConnection conn = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString"));
+            conn.Open();
+
+            SqlCommand command = new SqlCommand(
+                "application_sets.id as application_set_id " +
+                ", application_sets.name as application_set_name, application_sets.version as application_set_version," +
+                "applications.id as application_id, applications.name as application_name, applications.version as application_version," +
+                "files.id as file_id, files.name as file_name, files.version as file_version, files.directory as file_directory, files.binary_id" +
+                ", APCSProDBFil_files.data" +
+                " from cellcon.application_sets" +
+                " inner join cellcon.application_application_sets on application_application_sets.application_set_id = application_sets.id" +
+                " inner join cellcon.applications on applications.id = application_application_sets.application_id" +
+                " inner join cellcon.applications_file on applications_file.application_id = applications.id" +
+                " inner join cellcon.files on files.id = applications_file.file_id" +
+                " inner join APCSProDBFile.dbo.files as APCSProDBFil_files on APCSProDBFil_files.id = APCSProDB.cellcon.files.binary_id" +
+                " where application_sets.id = @ApplicationSetId "
+                , conn);
+            command.Parameters.AddWithValue("@ApplicationSetId", cell_Ip);
+            // int result = command.ExecuteNonQuery();
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    FileData fileData = new FileData
+                    {
+                        //MachineName = reader["machine_no"].ToString(),
+                        //MachineIpAddress = reader["cell_ip"].ToString(),
+                        //MachineId = int.Parse(reader["machine_id"].ToString()),
+
+                        ApplicationSetId = int.Parse(reader["application_set_id"].ToString()),
+                        ApplicationSetName = reader["application_set_name"].ToString(),
+                        ApplicationSetVersion = reader["application_set_version"].ToString(),
+
+                        ApplicationId = int.Parse(reader["application_id"].ToString()),
+                        ApplicationName = reader["application_name"].ToString(),
+                        ApplicationVersion = reader["application_version"].ToString(),
+
+                        FileId = int.Parse(reader["file_id"].ToString()),
+                        FileName = reader["file_name"].ToString(),
+                        FileVersion = reader["file_version"].ToString(),
+                        FileDirectory = reader["file_directory"].ToString(),
+                        FileBinary = (byte[])reader["data"]
+                    };
+
+                    fileDatasList.Add(fileData);
+                }
+                //if (reader.Read())
+                //{
+
                 //}
             }
 
@@ -196,7 +256,7 @@ namespace AutoUpdateProLibrary.Control
                         foreach (var process in processes)
                         {
                             process.Kill();
-                            System.Threading.Thread.Sleep(3000);
+                            System.Threading.Thread.Sleep(500);
                         }
                         goto peocessCheck;
                     }
