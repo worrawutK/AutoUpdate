@@ -7,9 +7,9 @@ namespace AutoUpdateProLibrary.Model
 {
     public class FileData
     {
-        public int MachineId { get; set; }
-        public string MachineIpAddress { get; set; }
-        public string MachineName { get; set; }
+        //public int MachineId { get; set; }
+        //public string MachineIpAddress { get; set; }
+        //public string MachineName { get; set; }
 
 
         public int ApplicationSetId { get; set; }

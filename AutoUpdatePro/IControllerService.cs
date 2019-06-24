@@ -8,10 +8,11 @@ namespace AutoUpdateProLibrary
     public interface IControllerService
     {
 
-        List<FileData> GetFilesData(string cell_Ip);
+        List<FileDataInfo> GetFilesInfo(string cell_Ip);
+        List<FileData> GetFiles(int app_Id);
         List<FileData> LoadFile(string path);
         SaveFileResult SaveFile(List<FileData> fileDatas,string path,string fileName);
-        CheckUpdateResult CheckUpdate(List<FileData> newFileDatas, List<FileData> oldFileDatas);
+        CheckUpdateResult CheckUpdate(List<FileDataInfo> newFileDatas, List<FileData> oldFileDatas);
         UpdateResult StartProgram(List<FileData> fileDatas);
         UpdateProgramResult UpdateProgram(List<FileData> newFileDatas);
 

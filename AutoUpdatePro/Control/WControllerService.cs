@@ -14,68 +14,74 @@ namespace AutoUpdateProLibrary.Control
 {
     public class WControllerService : IControllerService
     {
-        public List<FileData> GetFilesData(string cell_Ip)
+        public List<FileDataInfo> GetFilesInfo(string cell_Ip)
         {
-            List<FileData> fileDatasList = new List<FileData>();
-            //string cell_Ip = AppSettingHelper.GetAppSettingsValue("CellConIp");
-            //GetFile from database
-            SqlConnection conn = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString"));
-            conn.Open();
-
-            SqlCommand command = new SqlCommand(
-                "select  machines.name as machine_no,machines.id as machine_id,machines.cell_ip," + //mc.machine
-                "application_sets.id as application_set_id ,application_sets.name as application_set_name ,application_sets.version as application_set_version," + //cellcon.application_sets
-                "applications.id as application_id , applications.name as application_name ,applications.version as application_version," + //cellcon.applications
-                "files.id as file_id,files.name as file_name ,files.version as file_version, files.directory as file_directory,files.binary_id" + //cellcon.files
-                ",APCSProDBFil_files.data" +
-                " from mc.machines" +
-                " inner join cellcon.application_sets on application_sets.id = machines.application_set_id" + //cellcon.application_sets
-                " inner join cellcon.application_application_sets on application_application_sets.application_set_id = application_sets.id" +  //cellcon.application_sets + cellcon.applications
-                " inner join cellcon.applications on applications.id = application_application_sets.application_id" + //cellcon.applications
-                " inner join cellcon.applications_file on applications_file.application_id = applications.id" + //cellcon.applications + cellcon.files
-                " inner join cellcon.files on files.id = applications_file.file_id" + //cellcon.files
-                " inner join APCSProDBFile.dbo.files as APCSProDBFil_files on  APCSProDBFil_files.id = APCSProDB.cellcon.files.binary_id" +
-                " where machines.cell_ip = @MachineIp"
-                , conn);
-            command.Parameters.AddWithValue("@MachineIp", cell_Ip);
-            // int result = command.ExecuteNonQuery();
-            using (SqlDataReader reader = command.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                List<FileDataInfo> fileDatasList = new List<FileDataInfo>();
+                //string cell_Ip = AppSettingHelper.GetAppSettingsValue("CellConIp");
+                //GetFile from database
+                SqlConnection conn = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString"));
+                conn.Open();
+
+                SqlCommand command = new SqlCommand(
+                    "select  machines.name as machine_no,machines.id as machine_id,machines.cell_ip," + //mc.machine
+                    "application_sets.id as application_set_id ,application_sets.name as application_set_name ,application_sets.version as application_set_version," + //cellcon.application_sets
+                    "applications.id as application_id , applications.name as application_name ,applications.version as application_version," + //cellcon.applications
+                    "files.id as file_id,files.name as file_name ,files.version as file_version, files.directory as file_directory,files.binary_id" + //cellcon.files
+                    " from mc.machines" +
+                    " inner join cellcon.application_sets on application_sets.id = machines.application_set_id" + //cellcon.application_sets
+                    " inner join cellcon.application_application_sets on application_application_sets.application_set_id = application_sets.id" +  //cellcon.application_sets + cellcon.applications
+                    " inner join cellcon.applications on applications.id = application_application_sets.application_id" + //cellcon.applications
+                    " inner join cellcon.applications_file on applications_file.application_id = applications.id" + //cellcon.applications + cellcon.files
+                    " inner join cellcon.files on files.id = applications_file.file_id" + //cellcon.files
+                    " where machines.cell_ip = @MachineIp"
+                    , conn);
+                command.Parameters.AddWithValue("@MachineIp", cell_Ip);
+                // int result = command.ExecuteNonQuery();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    FileData fileData = new FileData
+                    while (reader.Read())
                     {
-                        MachineName = reader["machine_no"].ToString(),
-                        MachineIpAddress = reader["cell_ip"].ToString(),
-                        MachineId = int.Parse(reader["machine_id"].ToString()),
+                        FileDataInfo fileData = new FileDataInfo
+                        {
+                            MachineName = reader["machine_no"].ToString(),
+                            MachineIpAddress = reader["cell_ip"].ToString(),
+                            MachineId = int.Parse(reader["machine_id"].ToString()),
 
-                        ApplicationSetId = int.Parse(reader["application_set_id"].ToString()),
-                        ApplicationSetName = reader["application_set_name"].ToString(),
-                        ApplicationSetVersion = reader["application_set_version"].ToString(),
+                            ApplicationSetId = int.Parse(reader["application_set_id"].ToString()),
+                            ApplicationSetName = reader["application_set_name"].ToString(),
+                            ApplicationSetVersion = reader["application_set_version"].ToString(),
 
-                        ApplicationId = int.Parse(reader["application_id"].ToString()),
-                        ApplicationName = reader["application_name"].ToString(),
-                        ApplicationVersion = reader["application_version"].ToString(),
+                            ApplicationId = int.Parse(reader["application_id"].ToString()),
+                            ApplicationName = reader["application_name"].ToString(),
+                            ApplicationVersion = reader["application_version"].ToString(),
 
-                        FileId = int.Parse(reader["file_id"].ToString()),
-                        FileName = reader["file_name"].ToString(),
-                        FileVersion = reader["file_version"].ToString(),
-                        FileDirectory = reader["file_directory"].ToString(),
-                        FileBinary = (byte[])reader["data"]
-                    };
-                    
-                    fileDatasList.Add(fileData);
+                            FileId = int.Parse(reader["file_id"].ToString()),
+                            FileName = reader["file_name"].ToString(),
+                            FileVersion = reader["file_version"].ToString(),
+                            FileDirectory = reader["file_directory"].ToString(),
+                            //FileBinary = (byte[])reader["data"]
+                        };
+
+                        fileDatasList.Add(fileData);
+                    }
+                    //if (reader.Read())
+                    //{
+
+                    //}
                 }
-                //if (reader.Read())
-                //{
-                    
-                //}
-            }
 
-            conn.Close();
-            return fileDatasList;
+                conn.Close();
+                return fileDatasList;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+          
         }
-        public List<FileData> GetFiles(string cell_Ip)
+        public List<FileData> GetFiles(int app_Id)
         {
             List<FileData> fileDatasList = new List<FileData>();
             //string cell_Ip = AppSettingHelper.GetAppSettingsValue("CellConIp");
@@ -84,10 +90,10 @@ namespace AutoUpdateProLibrary.Control
             conn.Open();
 
             SqlCommand command = new SqlCommand(
-                "application_sets.id as application_set_id " +
+                " select application_sets.id as application_set_id " +
                 ", application_sets.name as application_set_name, application_sets.version as application_set_version," +
-                "applications.id as application_id, applications.name as application_name, applications.version as application_version," +
-                "files.id as file_id, files.name as file_name, files.version as file_version, files.directory as file_directory, files.binary_id" +
+                " applications.id as application_id, applications.name as application_name, applications.version as application_version," +
+                " files.id as file_id, files.name as file_name, files.version as file_version, files.directory as file_directory, files.binary_id" +
                 ", APCSProDBFil_files.data" +
                 " from cellcon.application_sets" +
                 " inner join cellcon.application_application_sets on application_application_sets.application_set_id = application_sets.id" +
@@ -97,7 +103,7 @@ namespace AutoUpdateProLibrary.Control
                 " inner join APCSProDBFile.dbo.files as APCSProDBFil_files on APCSProDBFil_files.id = APCSProDB.cellcon.files.binary_id" +
                 " where application_sets.id = @ApplicationSetId "
                 , conn);
-            command.Parameters.AddWithValue("@ApplicationSetId", cell_Ip);
+            command.Parameters.AddWithValue("@ApplicationSetId", app_Id);
             // int result = command.ExecuteNonQuery();
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -174,7 +180,7 @@ namespace AutoUpdateProLibrary.Control
         {
             try
             {
-                var machineList = fileDatas.Select(y => new { y.MachineId }).Distinct().ToList();
+                //var machineList = fileDatas.Select(y => new { y.MachineId }).Distinct().ToList();
                 //machineList.Where(m => m.MachineId == x.MachineId).Any()
                 var exeFile = fileDatas.Where(x =>
                 x.FileName.Contains(".exe") &&
@@ -277,7 +283,7 @@ namespace AutoUpdateProLibrary.Control
             return new UpdateProgramResult(true,"",MethodBase.GetCurrentMethod().Name);
         }
 
-        public CheckUpdateResult CheckUpdate(List<FileData> newFileDatas, List<FileData> oldFileDatas)
+        public CheckUpdateResult CheckUpdate(List<FileDataInfo> newFileDatas, List<FileData> oldFileDatas)
         {
             if (oldFileDatas == null || oldFileDatas.Count == 0)
             {
