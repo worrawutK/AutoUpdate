@@ -8,6 +8,7 @@ using AutoUpdateProLibrary.Model;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using System.Net;
 
 namespace AutoUpdateProLibrary
 {
@@ -27,14 +28,39 @@ namespace AutoUpdateProLibrary
         public Controller()
         {
             ControllerService = CellControllerFactory.CreateInterface();
-            c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
             c_FileDatas = new List<FileData>();
+
+            //Get IP Cellcon
+            string GetMachineBy = AppSettingHelper.GetAppSettingsValue("GetMachineBy").Trim().ToUpper();
+            string strHostName = Dns.GetHostName();
+            switch (GetMachineBy)
+            {
+                case "IP":
+                    foreach (var address in Dns.GetHostEntry(strHostName).AddressList)
+                    {
+                        if (address.ToString().Contains("172") || address.ToString().Contains("10.28"))
+                        {
+                            c_CellIp = address.ToString();
+                            break;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(c_CellIp))
+                        MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "กรุณาตรวจสอบการเชี่ยมต่อของ Network", "");
+                    break;
+                case "NAME":
+                    c_CellIp = strHostName;
+                    break;
+                case "MANUAL":
+                    c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
+                    break;
+            }
+          
         }
         public UpdateFileResult UpdateFile()
         {
             try
             {
-                DateTime dateTime = DateTime.Now;
+              //  DateTime dateTime = DateTime.Now;
                 string path = Directory.GetCurrentDirectory();// @"";
                 string fileName = "ProgramData.xml";
                 string pathBackpup = Path.Combine(Directory.GetCurrentDirectory(), "Backup");
@@ -70,13 +96,13 @@ namespace AutoUpdateProLibrary
                     {
                         return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, checkUpdateResult.Cause);
                     }
-                    Debug.Print("Not Update:" + (DateTime.Now - dateTime).ToString());
+                    //Debug.Print("Not Update:" + (DateTime.Now - dateTime).ToString());
                     return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
                 }
 
-                Debug.Print("Before GetFiles:" + (DateTime.Now - dateTime).ToString());
+                //Debug.Print("Before GetFiles:" + (DateTime.Now - dateTime).ToString());
                 List<FileData> newFileData = c_ControllerService.GetFiles((application.FirstOrDefault()).ApplicationSetId);
-                Debug.Print("After GetFiles:" + (DateTime.Now - dateTime).ToString());
+                //Debug.Print("After GetFiles:" + (DateTime.Now - dateTime).ToString());
                 //Backup Old File
                 if (!(c_FileDatas == null || c_FileDatas.Count == 0))
                 {
@@ -88,9 +114,9 @@ namespace AutoUpdateProLibrary
                 }
                 c_FileDatas = newFileData;
                 //Coppy new file to old file (Replete)
-                Debug.Print("Before UpdateProgram:" + (DateTime.Now - dateTime).ToString());
+                //Debug.Print("Before UpdateProgram:" + (DateTime.Now - dateTime).ToString());
                 UpdateProgramResult updateProgramResult = c_ControllerService.UpdateProgram(c_FileDatas);
-                Debug.Print("After UpdateProgram:" + (DateTime.Now - dateTime).ToString());
+                //Debug.Print("After UpdateProgram:" + (DateTime.Now - dateTime).ToString());
                 if (!updateProgramResult.IsPass)
                 {
                     return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, updateProgramResult.Cause);
@@ -107,7 +133,7 @@ namespace AutoUpdateProLibrary
 
                 //Start Program
                 UpdateResult updateResult = c_ControllerService.StartProgram(c_FileDatas);
-                Debug.Print("Update:" + (DateTime.Now - dateTime).ToString());
+                //Debug.Print("Update:" + (DateTime.Now - dateTime).ToString());
                 return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
             }
             catch (Exception ex)
