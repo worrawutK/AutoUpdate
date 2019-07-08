@@ -393,7 +393,13 @@ namespace AutoUpdateSetting.View
 
         private void ComboBoxCellconName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var cellconVersion = c_CellOnServer.Where(x => x.CellconName == comboBoxCellconName.Text).OrderByDescending(y => y.CellconId).FirstOrDefault().CellconVersion;
+            var tmp = c_CellOnServer.Where(x => x.CellconName == comboBoxCellconName.Text).OrderByDescending(y => y.CellconId).FirstOrDefault();
+            if (tmp == null)
+            {
+                textBoxCellconVersion.Text = "1.0.0.0";
+                return;
+            }
+            var cellconVersion = tmp.CellconVersion;
             var countVersion = cellconVersion.Split('.');
             string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
             textBoxCellconVersion.Text = fileNewVersion;

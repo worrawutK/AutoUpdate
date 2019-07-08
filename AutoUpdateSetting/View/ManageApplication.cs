@@ -378,7 +378,13 @@ namespace AutoUpdateSetting.View
 
         private void ComboBoxProgramName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var appVersion = c_AppOnServer.Where(x => x.ApplictionName == comboBoxProgramName.Text).OrderByDescending(y=>y.ApplicationId).FirstOrDefault().ApplictionVersion;
+            var tmp = c_AppOnServer.Where(x => x.ApplictionName == comboBoxProgramName.Text).OrderByDescending(y => y.ApplicationId).FirstOrDefault();
+            if (tmp == null)
+            {
+                textBoxProgramVersion.Text = "1.0.0.0";
+                return;
+            }
+            var appVersion = tmp.ApplictionVersion;
             var countVersion = appVersion.Split('.');
             string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
             textBoxProgramVersion.Text = fileNewVersion;

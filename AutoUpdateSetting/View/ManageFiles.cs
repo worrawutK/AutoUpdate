@@ -220,11 +220,18 @@ namespace AutoUpdateSetting.View
             {
                 labelPathFile.Text = openFileDialog1.FileName;
                 textBoxPathFile.Text = Path.GetFileName(openFileDialog1.FileName).Trim();
-                string fileOldVersion = c_FileOnServer.Where(x => x.Name == textBoxPathFile.Text).OrderByDescending(x => x.FileId).FirstOrDefault().FileVersion;
-                var countVersion = fileOldVersion.Split('.');
-                string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
-
-                textBoxFileVersion.Text = fileNewVersion;
+                var tmp = c_FileOnServer.Where(x => x.Name == textBoxPathFile.Text).OrderByDescending(x => x.FileId).FirstOrDefault();
+                if (tmp == null)
+                {
+                    textBoxFileVersion.Text = "1.0.0.0";
+                }
+                else
+                {
+                    string fileOldVersion = tmp.FileVersion;
+                    var countVersion = fileOldVersion.Split('.');
+                    string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
+                    textBoxFileVersion.Text = fileNewVersion;
+                }
                 c_Status = StatusFile.Local;
                 UpdateUIState(c_Status.Value);
             }
