@@ -20,15 +20,54 @@ namespace AutoUpdateSetting.View
         private int? c_FileId;
         private StatusFile? c_Status;
         private List<FileData> c_FileDatas;
+        private List<FileData> c_FileOnServer;
         private MainForm c_MainFrom;
         public ManageFiles(MainForm mainForm)
         {
             InitializeComponent();
             c_FileDatas = new List<FileData>();
+            c_FileOnServer = GetFileDatas();
             c_MainFrom = mainForm;
           //  InitializeView();
         }
+        private List<FileData> GetFileDatas()
+        {
+            List<FileData> fileDataList = new List<FileData>();
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conn.Open();
 
+                SqlCommand command = conn.CreateCommand();
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+
+                try
+                {
+                    command.CommandText = "select [id],[name],[binary_id],[version],[directory] from [cellcon].[files]";
+                    //command.Parameters.AddWithValue("@file", fileData.Data);
+                    var result = command.ExecuteReader();
+                    while (result.Read())
+                    {
+                        FileData fileData = new FileData();
+                        fileData.FileId = int.Parse(result["id"].ToString());
+                        fileData.Name = result["name"].ToString();
+                        fileData.BinaryId = int.Parse(result["binary_id"].ToString());
+                        fileData.FileVersion = result["version"].ToString();
+                        fileData.Directory = result["directory"].ToString();
+                        fileDataList.Add(fileData);
+                    }
+                    //fileData.BinaryId = int.Parse(fileId.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                conn.Close();
+            }
+            return fileDataList;
+        }
         #region View
         //private void InitializeView()
         //{
@@ -160,13 +199,18 @@ namespace AutoUpdateSetting.View
             {
                 case StatusFile.Local:
                     textBoxFileVersion.Enabled = true;
-                    textBoxFileVersion.Text = "";
                     break;
                 case StatusFile.Server:
                     textBoxFileVersion.Enabled = false;
                     break;
                 default:
                     break;
+            }
+            var directoryList = c_FileOnServer.Select(x => new { x.Directory }).Distinct().ToList();
+            comboBoxDirectory.Items.Clear();
+            foreach (var item in directoryList)
+            {
+                comboBoxDirectory.Items.Add(item.Directory);
             }
         }
 
@@ -176,6 +220,11 @@ namespace AutoUpdateSetting.View
             {
                 labelPathFile.Text = openFileDialog1.FileName;
                 textBoxPathFile.Text = Path.GetFileName(openFileDialog1.FileName).Trim();
+                string fileOldVersion = c_FileOnServer.Where(x => x.Name == textBoxPathFile.Text).OrderByDescending(x => x.FileId).FirstOrDefault().FileVersion;
+                var countVersion = fileOldVersion.Split('.');
+                string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
+
+                textBoxFileVersion.Text = fileNewVersion;
                 c_Status = StatusFile.Local;
                 UpdateUIState(c_Status.Value);
             }
@@ -183,40 +232,7 @@ namespace AutoUpdateSetting.View
 
         private void ButtonBrowseServer_Click(object sender, EventArgs e)
         {
-            List<FileData> fileDataList = new List<FileData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
-
-                SqlCommand command = conn.CreateCommand();
-
-                // Must assign both transaction object and connection
-                // to Command object for a pending local transaction
-                command.Connection = conn;
-
-                try
-                {
-                    command.CommandText = "select distinct [name],[binary_id],[version] from [cellcon].[files]";
-                    //command.Parameters.AddWithValue("@file", fileData.Data);
-                    var result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        FileData fileData = new FileData();
-                        fileData.Name = result["name"].ToString();
-                        fileData.BinaryId = int.Parse(result["binary_id"].ToString());
-                        fileData.FileVersion = result["version"].ToString();
-                        fileDataList.Add(fileData);
-                    }
-                    //fileData.BinaryId = int.Parse(fileId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-
-            FormFileList frm = new FormFileList(fileDataList);
+            FormFileList frm = new FormFileList(c_FileOnServer);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 labelPathFile.Text = "Database";

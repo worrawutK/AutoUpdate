@@ -37,6 +37,7 @@
             this.pictureBoxManageApplication = new System.Windows.Forms.PictureBox();
             this.pictureBoxManageFiles = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.labelVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxManageMachines)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxManageCellcon)).BeginInit();
@@ -63,7 +64,7 @@
             this.panelMain.BackColor = System.Drawing.Color.Transparent;
             this.panelMain.Location = new System.Drawing.Point(287, 108);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(956, 742);
+            this.panelMain.Size = new System.Drawing.Size(956, 719);
             this.panelMain.TabIndex = 4;
             // 
             // pictureBoxExit
@@ -152,11 +153,25 @@
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
+            // labelVersion
+            // 
+            this.labelVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelVersion.BackColor = System.Drawing.Color.Transparent;
+            this.labelVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.labelVersion.ForeColor = System.Drawing.Color.White;
+            this.labelVersion.Location = new System.Drawing.Point(1054, 837);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(189, 16);
+            this.labelVersion.TabIndex = 5;
+            this.labelVersion.Text = "Version";
+            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1255, 862);
+            this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.labelHeader);
             this.Controls.Add(this.pictureBoxExit);
@@ -192,5 +207,6 @@
         private System.Windows.Forms.PictureBox pictureBoxExit;
         private System.Windows.Forms.Label labelHeader;
         public System.Windows.Forms.Panel panelMain;
+        private System.Windows.Forms.Label labelVersion;
     }
 }

@@ -17,16 +17,63 @@ namespace AutoUpdateSetting.View
     public partial class ManageApplication : UserControl
     {
         private ApplicationData c_ApplictionData;
+        private List<ApplicationData> c_AppOnServer;
         private MainForm c_MainFrom;
+
         public ManageApplication(MainForm mainForm)
         {
             InitializeComponent();
             c_ApplictionData = new ApplicationData();
             c_MainFrom = mainForm;
-            var data = GetData();
-            c_ApplictionData.FileDataList = data;
-
+            c_ApplictionData.FileDataList = GetData();
+            c_AppOnServer = GetApplicationData();
             comboBox1.DataSource = c_ApplictionData.FileDataList.Select(x => x.Directory).Distinct().ToList();
+            AddListComboBoxProgramName(c_AppOnServer);
+        }
+        private void AddListComboBoxProgramName(List<ApplicationData> applicationDatas)
+        {
+            comboBoxProgramName.Items.Clear();
+            var appList = applicationDatas.Select(x => new { x.ApplictionName }).Distinct().OrderBy(y => y.ApplictionName).ToList();
+            foreach (var item in appList)
+            {
+                comboBoxProgramName.Items.Add(item.ApplictionName);
+            }
+        }
+        private List<ApplicationData> GetApplicationData()
+        {
+            List<ApplicationData> appDataList = new List<ApplicationData>();
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conn.Open();
+
+                SqlCommand command = conn.CreateCommand();
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+
+                try
+                {
+                    command.CommandText = "select  [id],[name],[version] from [cellcon].[applications]";
+                    //command.Parameters.AddWithValue("@file", fileData.Data);
+                    var result = command.ExecuteReader();
+                    while (result.Read())
+                    {
+                        ApplicationData appData = new ApplicationData();
+                        appData.ApplicationId = int.Parse(result["id"].ToString());
+                        appData.ApplictionName = result["name"].ToString();
+                        appData.ApplictionVersion = result["version"].ToString();
+                        appDataList.Add(appData);
+                    }
+                    //fileData.BinaryId = int.Parse(fileId.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                conn.Close();
+            }
+            return appDataList;
         }
         private List<FileData> GetData()
         {
@@ -155,15 +202,58 @@ namespace AutoUpdateSetting.View
         }
         #endregion
 
+        private bool ExitFile(string programName, string programVersion)
+        {
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conn.Open();
+
+                SqlCommand command = conn.CreateCommand();
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+
+                try
+                {
+                    command.CommandText = "select [name],[version] from [APCSProDB].[cellcon].[applications] where [name] = @programName and [version] = @version";
+                    command.Parameters.AddWithValue("@programName", programName);
+                    command.Parameters.AddWithValue("@version", programVersion);
+                    var result = command.ExecuteReader();
+                    if (!result.HasRows)
+                    {
+                        conn.Close();
+                        return true;
+                    }
+                    conn.Close();
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    conn.Close();
+                    MessageBox.Show(ex.ToString());
+                    return false;
+                }
+             
+            }
+          
+
+        }
         private void PictureBoxRegister_Click(object sender, EventArgs e)
         {
-            string programName = textBoxProgramName.Text;
+            string programName = comboBoxProgramName.Text;
             string programVersion = textBoxProgramVersion.Text;
             if (string.IsNullOrEmpty(programName) || string.IsNullOrEmpty(programVersion))
             {
                 MessageBoxDialog.ShowMessageDialog("Manage Application", "ข้อมูลไม่ครบ! กรุณาตรวจสอบอีกครั้ง", "Error");
                 return;
             }
+            if (!ExitFile(programName, programVersion))
+            {
+                MessageBoxDialog.ShowMessageDialog("Manage Application", string.Format("Program:{0} \r\n Version:{1} มีอยู่ในระบบแล้ว", programName, programVersion), "Error");
+                return;
+            }
+
             var fileData = c_ApplictionData.FileDataList.Where(x => x.FileSelect);
             foreach (var data in fileData)
             {
@@ -284,6 +374,14 @@ namespace AutoUpdateSetting.View
         private void pictureBoxRegister_MouseLeave(object sender, EventArgs e)
         {
             pictureBoxRegister.Image = AutoUpdateSetting.Properties.Resources.button_resister;
+        }
+
+        private void ComboBoxProgramName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var appVersion = c_AppOnServer.Where(x => x.ApplictionName == comboBoxProgramName.Text).OrderByDescending(y=>y.ApplicationId).FirstOrDefault().ApplictionVersion;
+            var countVersion = appVersion.Split('.');
+            string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
+            textBoxProgramVersion.Text = fileNewVersion;
         }
     }
 }

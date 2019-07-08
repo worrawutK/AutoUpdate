@@ -33,10 +33,10 @@
             this.labelProgramVersion = new System.Windows.Forms.Label();
             this.labelProgramName = new System.Windows.Forms.Label();
             this.textBoxProgramVersion = new System.Windows.Forms.TextBox();
-            this.textBoxProgramName = new System.Windows.Forms.TextBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
+            this.comboBoxProgramName = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegister)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,16 +95,8 @@
             this.textBoxProgramVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.textBoxProgramVersion.Location = new System.Drawing.Point(207, 70);
             this.textBoxProgramVersion.Name = "textBoxProgramVersion";
-            this.textBoxProgramVersion.Size = new System.Drawing.Size(233, 29);
+            this.textBoxProgramVersion.Size = new System.Drawing.Size(329, 29);
             this.textBoxProgramVersion.TabIndex = 21;
-            // 
-            // textBoxProgramName
-            // 
-            this.textBoxProgramName.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.textBoxProgramName.Location = new System.Drawing.Point(207, 25);
-            this.textBoxProgramName.Name = "textBoxProgramName";
-            this.textBoxProgramName.Size = new System.Drawing.Size(233, 29);
-            this.textBoxProgramName.TabIndex = 22;
             // 
             // comboBox1
             // 
@@ -138,19 +130,29 @@
             this.label1.TabIndex = 27;
             this.label1.Text = "Select Files";
             // 
+            // comboBoxProgramName
+            // 
+            this.comboBoxProgramName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.comboBoxProgramName.FormattingEnabled = true;
+            this.comboBoxProgramName.Location = new System.Drawing.Point(207, 23);
+            this.comboBoxProgramName.Name = "comboBoxProgramName";
+            this.comboBoxProgramName.Size = new System.Drawing.Size(329, 28);
+            this.comboBoxProgramName.TabIndex = 29;
+            this.comboBoxProgramName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxProgramName_SelectedIndexChanged);
+            // 
             // ManageApplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Controls.Add(this.comboBoxProgramName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBoxRegister);
             this.Controls.Add(this.labelPath);
             this.Controls.Add(this.labelProgramVersion);
             this.Controls.Add(this.labelProgramName);
             this.Controls.Add(this.textBoxProgramVersion);
-            this.Controls.Add(this.textBoxProgramName);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.treeView1);
             this.Name = "ManageApplication";
@@ -167,9 +169,9 @@
         private System.Windows.Forms.Label labelProgramVersion;
         private System.Windows.Forms.Label labelProgramName;
         private System.Windows.Forms.TextBox textBoxProgramVersion;
-        private System.Windows.Forms.TextBox textBoxProgramName;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBoxProgramName;
     }
 }

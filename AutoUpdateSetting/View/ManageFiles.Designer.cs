@@ -215,9 +215,6 @@
             // 
             this.comboBoxDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.comboBoxDirectory.FormattingEnabled = true;
-            this.comboBoxDirectory.Items.AddRange(new object[] {
-            "D:\\Apcs Pro\\CellconCommon",
-            "D:\\Apcs Pro\\LPM"});
             this.comboBoxDirectory.Location = new System.Drawing.Point(179, 166);
             this.comboBoxDirectory.Name = "comboBoxDirectory";
             this.comboBoxDirectory.Size = new System.Drawing.Size(376, 28);

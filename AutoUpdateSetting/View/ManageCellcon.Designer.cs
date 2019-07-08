@@ -31,10 +31,10 @@
             this.labelCellconVersion = new System.Windows.Forms.Label();
             this.labelCellconName = new System.Windows.Forms.Label();
             this.textBoxCellconVersion = new System.Windows.Forms.TextBox();
-            this.textBoxCellconName = new System.Windows.Forms.TextBox();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.labelApplication = new System.Windows.Forms.Label();
             this.pictureBoxRegister = new System.Windows.Forms.PictureBox();
+            this.comboBoxCellconName = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegister)).BeginInit();
             this.SuspendLayout();
             // 
@@ -67,16 +67,8 @@
             this.textBoxCellconVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.textBoxCellconVersion.Location = new System.Drawing.Point(195, 74);
             this.textBoxCellconVersion.Name = "textBoxCellconVersion";
-            this.textBoxCellconVersion.Size = new System.Drawing.Size(250, 26);
+            this.textBoxCellconVersion.Size = new System.Drawing.Size(329, 26);
             this.textBoxCellconVersion.TabIndex = 19;
-            // 
-            // textBoxCellconName
-            // 
-            this.textBoxCellconName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.textBoxCellconName.Location = new System.Drawing.Point(195, 26);
-            this.textBoxCellconName.Name = "textBoxCellconName";
-            this.textBoxCellconName.Size = new System.Drawing.Size(250, 26);
-            this.textBoxCellconName.TabIndex = 20;
             // 
             // treeView1
             // 
@@ -114,18 +106,28 @@
             this.pictureBoxRegister.MouseLeave += new System.EventHandler(this.pictureBoxRegister_MouseLeave);
             this.pictureBoxRegister.MouseHover += new System.EventHandler(this.pictureBoxRegister_MouseHover);
             // 
+            // comboBoxCellconName
+            // 
+            this.comboBoxCellconName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.comboBoxCellconName.FormattingEnabled = true;
+            this.comboBoxCellconName.Location = new System.Drawing.Point(195, 27);
+            this.comboBoxCellconName.Name = "comboBoxCellconName";
+            this.comboBoxCellconName.Size = new System.Drawing.Size(329, 28);
+            this.comboBoxCellconName.TabIndex = 30;
+            this.comboBoxCellconName.SelectedIndexChanged += new System.EventHandler(this.ComboBoxCellconName_SelectedIndexChanged);
+            // 
             // ManageCellcon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Controls.Add(this.comboBoxCellconName);
             this.Controls.Add(this.labelApplication);
             this.Controls.Add(this.pictureBoxRegister);
             this.Controls.Add(this.labelCellconVersion);
             this.Controls.Add(this.labelCellconName);
             this.Controls.Add(this.textBoxCellconVersion);
-            this.Controls.Add(this.textBoxCellconName);
             this.Controls.Add(this.treeView1);
             this.Name = "ManageCellcon";
             this.Size = new System.Drawing.Size(948, 734);
@@ -140,8 +142,8 @@
         private System.Windows.Forms.Label labelCellconVersion;
         private System.Windows.Forms.Label labelCellconName;
         private System.Windows.Forms.TextBox textBoxCellconVersion;
-        private System.Windows.Forms.TextBox textBoxCellconName;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Label labelApplication;
+        private System.Windows.Forms.ComboBox comboBoxCellconName;
     }
 }

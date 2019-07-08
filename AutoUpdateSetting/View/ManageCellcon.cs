@@ -17,6 +17,7 @@ namespace AutoUpdateSetting.View
     public partial class ManageCellcon : UserControl
     {
         private List<ApplicationData> c_ApplicationDatas;
+        private List<CellconData> c_CellOnServer;
         private MainForm c_MainFrom;
         public ManageCellcon(MainForm mainForm)
         {
@@ -25,6 +26,53 @@ namespace AutoUpdateSetting.View
             var data = GetData();
             UpdateTreeView(data);
             c_MainFrom = mainForm;
+            c_CellOnServer = GetCellconData();
+            AddListComboBoxCellconName(c_CellOnServer);
+        }
+        private List<CellconData> GetCellconData()
+        {
+            List<CellconData> cellconDataList = new List<CellconData>();
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conn.Open();
+
+                SqlCommand command = conn.CreateCommand();
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+
+                try
+                {
+                    command.CommandText = "select  [id],[name],[version] from [cellcon].[application_sets]";
+                    //command.Parameters.AddWithValue("@file", fileData.Data);
+                    var result = command.ExecuteReader();
+                    while (result.Read())
+                    {
+                        CellconData cellconData = new CellconData();
+                        cellconData.CellconId = int.Parse(result["id"].ToString());
+                        cellconData.CellconName = result["name"].ToString();
+                        cellconData.CellconVersion = result["version"].ToString();
+                        cellconDataList.Add(cellconData);
+                    }
+                    //fileData.BinaryId = int.Parse(fileId.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+                conn.Close();
+            }
+            return cellconDataList;
+        }
+        private void AddListComboBoxCellconName(List<CellconData> cellconDatas)
+        {
+            comboBoxCellconName.Items.Clear();
+            var appList = cellconDatas.Select(x => new { x.CellconName }).Distinct().OrderBy(y => y.CellconName).ToList();
+            foreach (var item in appList)
+            {
+                comboBoxCellconName.Items.Add(item.CellconName);
+            }
         }
         private List<ApplicationData> GetData()
         {
@@ -61,7 +109,7 @@ namespace AutoUpdateSetting.View
             {
                 treeView1.Nodes.Add(file.ApplictionName);
 
-                var fileDatas = applicationDatas.Where(x => x.ApplictionName.Contains(file.ApplictionName));
+                var fileDatas = applicationDatas.Where(x => x.ApplictionName == file.ApplictionName);
                 foreach (var item in fileDatas)
                 {
                     treeView1.Nodes[i].Nodes.Add(item.ApplictionVersion);
@@ -248,16 +296,58 @@ namespace AutoUpdateSetting.View
                 }
             }
         }
+        private bool ExitFile(string cellconName, string cellconVersion)
+        {
+            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conn.Open();
 
+                SqlCommand command = conn.CreateCommand();
+
+                // Must assign both transaction object and connection
+                // to Command object for a pending local transaction
+                command.Connection = conn;
+
+                try
+                {
+                    command.CommandText = "select [name],[version] from [APCSProDB].[cellcon].[application_sets] where [name] = @cellconName and [version] = @cellconVersion";
+                    command.Parameters.AddWithValue("@cellconName", cellconName);
+                    command.Parameters.AddWithValue("@cellconVersion", cellconVersion);
+                    var result = command.ExecuteReader();
+                    if (!result.HasRows)
+                    {
+                        conn.Close();
+                        return true;
+                    }
+                    conn.Close();
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    conn.Close();
+                    MessageBox.Show(ex.ToString());
+                    return false;
+                }
+
+            }
+
+
+        }
         private void PictureBoxRegister_Click(object sender, EventArgs e)
         {
-            string cellconName = textBoxCellconName.Text;
+            string cellconName = comboBoxCellconName.Text;
             string cellconVersion = textBoxCellconVersion.Text;
             if (string.IsNullOrEmpty(cellconName) || string.IsNullOrEmpty(cellconVersion))
             {
                 MessageBox.Show("กรุณากรอกข้อมูลให้ครบถ้วน!!");
                 return;
             }
+            if (!ExitFile(cellconName, cellconVersion))
+            {
+                MessageBoxDialog.ShowMessageDialog("Manage Application", string.Format("Cellcon:{0} \r\n Version:{1} มีอยู่ในระบบแล้ว", cellconName, cellconVersion), "Error");
+                return;
+            }
+
             //remove select file
             var appDatas = c_ApplicationDatas.Where(x => x.ApplicationSelect);
             foreach (var app in appDatas)
@@ -301,6 +391,12 @@ namespace AutoUpdateSetting.View
             pictureBoxRegister.Image = AutoUpdateSetting.Properties.Resources.button_resister;
         }
 
-     
+        private void ComboBoxCellconName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var cellconVersion = c_CellOnServer.Where(x => x.CellconName == comboBoxCellconName.Text).OrderByDescending(y => y.CellconId).FirstOrDefault().CellconVersion;
+            var countVersion = cellconVersion.Split('.');
+            string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
+            textBoxCellconVersion.Text = fileNewVersion;
+        }
     }
 }

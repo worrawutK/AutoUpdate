@@ -110,7 +110,7 @@ namespace AutoUpdateSetting
         {
             //pictureBox1.Controls.Add(pictureBoxAddFile);
             //pictureBoxAddFile.Location = new Point(24, 12);
-
+            
             pictureBoxManageFiles.Parent = pictureBox1;
             pictureBoxManageApplication.Parent = pictureBox1;
             pictureBoxManageCellcon.Parent = pictureBox1;
@@ -118,7 +118,8 @@ namespace AutoUpdateSetting
             pictureBoxExit.Parent = pictureBox1;
             labelHeader.Parent = pictureBox1;
             panelMain.Parent = pictureBox1;
-
+            labelVersion.Parent = pictureBox1;
+            labelVersion.Text = "Version :" + this.ProductVersion;
         }
 
         private void pictureBoxExit_Click(object sender, EventArgs e)
