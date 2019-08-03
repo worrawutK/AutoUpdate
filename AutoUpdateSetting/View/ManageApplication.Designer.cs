@@ -117,6 +117,7 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(429, 285);
             this.treeView1.TabIndex = 19;
+            this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1_AfterCheck);
             // 
             // label1
             // 

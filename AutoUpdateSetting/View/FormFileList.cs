@@ -30,7 +30,7 @@ namespace AutoUpdateSetting.View
             labelVersion.Parent = pictureBox1;
             labelHeader.Parent = pictureBox1;
             pictureBoxCancel.Parent = pictureBox1;
-            List<string> fileName = c_FileDataList.Select(x => x.Name).Distinct().ToList();
+            List<string> fileName = c_FileDataList.Select(x => x.Name).Distinct().OrderBy(x=>x).ToList();
             foreach (var item in fileName)
             {
                 listBoxProgramName.Items.Add(item);
@@ -45,12 +45,22 @@ namespace AutoUpdateSetting.View
         {
             ListBox listBox = (ListBox)sender;
 
-            var fileData = c_FileDataList.Where(x => x.Name == listBox.SelectedItem.ToString()).ToList();
+            var fileData = c_FileDataList.Where(x => x.Name == listBox.SelectedItem.ToString()).Select(x=> x.FileVersion).Distinct().OrderByDescending(x=>x).ToList();
             listBoxFileList.Items.Clear();
+            List<Version> versions = new List<Version>();
+           
             foreach (var item in fileData)
             {
-                listBoxFileList.Items.Add(item.FileVersion);
+             
+                versions.Add(new Version(item));
             }
+            versions.Sort();
+            versions.Reverse();
+            foreach (var item in versions)
+            {
+                listBoxFileList.Items.Add(item);
+            }
+
         }
 
         private void listBoxProgramName_SelectedIndexChanged(object sender, EventArgs e)

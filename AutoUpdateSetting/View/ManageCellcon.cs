@@ -19,52 +19,51 @@ namespace AutoUpdateSetting.View
         private List<ApplicationData> c_ApplicationDatas;
         private List<CellconData> c_CellOnServer;
         private MainForm c_MainFrom;
-        public ManageCellcon(MainForm mainForm)
+        public ManageCellcon(MainForm mainForm,List<ApplicationData> applicationDatas,List<CellconData> cellconDatas)
         {
             InitializeComponent();
-            c_ApplicationDatas = new List<ApplicationData>();
-            var data = GetData();
-            UpdateTreeView(data);
+            c_ApplicationDatas = applicationDatas;// GetData();
+            UpdateTreeView(c_ApplicationDatas);
             c_MainFrom = mainForm;
-            c_CellOnServer = GetCellconData();
+            c_CellOnServer = cellconDatas;//GetCellconData();
             AddListComboBoxCellconName(c_CellOnServer);
         }
-        private List<CellconData> GetCellconData()
-        {
-            List<CellconData> cellconDataList = new List<CellconData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
+        //private List<CellconData> GetCellconData()
+        //{
+        //    List<CellconData> cellconDataList = new List<CellconData>();
+        //    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        conn.Open();
 
-                SqlCommand command = conn.CreateCommand();
+        //        SqlCommand command = conn.CreateCommand();
 
-                // Must assign both transaction object and connection
-                // to Command object for a pending local transaction
-                command.Connection = conn;
+        //        // Must assign both transaction object and connection
+        //        // to Command object for a pending local transaction
+        //        command.Connection = conn;
 
-                try
-                {
-                    command.CommandText = "select  [id],[name],[version] from [cellcon].[application_sets]";
-                    //command.Parameters.AddWithValue("@file", fileData.Data);
-                    var result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        CellconData cellconData = new CellconData();
-                        cellconData.CellconId = int.Parse(result["id"].ToString());
-                        cellconData.CellconName = result["name"].ToString();
-                        cellconData.CellconVersion = result["version"].ToString();
-                        cellconDataList.Add(cellconData);
-                    }
-                    //fileData.BinaryId = int.Parse(fileId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-            return cellconDataList;
-        }
+        //        try
+        //        {
+        //            command.CommandText = "select  [id],[name],[version] from [cellcon].[application_sets]";
+        //            //command.Parameters.AddWithValue("@file", fileData.Data);
+        //            var result = command.ExecuteReader();
+        //            while (result.Read())
+        //            {
+        //                CellconData cellconData = new CellconData();
+        //                cellconData.CellconId = int.Parse(result["id"].ToString());
+        //                cellconData.CellconName = result["name"].ToString();
+        //                cellconData.CellconVersion = result["version"].ToString();
+        //                cellconDataList.Add(cellconData);
+        //            }
+        //            //fileData.BinaryId = int.Parse(fileId.ToString());
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.ToString());
+        //        }
+        //        conn.Close();
+        //    }
+        //    return cellconDataList;
+        //}
         private void AddListComboBoxCellconName(List<CellconData> cellconDatas)
         {
             comboBoxCellconName.Items.Clear();
@@ -74,45 +73,78 @@ namespace AutoUpdateSetting.View
                 comboBoxCellconName.Items.Add(item.CellconName);
             }
         }
-        private List<ApplicationData> GetData()
-        {
-            //(Properties.Settings.Default.APCSProDB))
-            using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                con.Open();
-                SqlCommand command = con.CreateCommand();
-                command.CommandText = "select [applications].[id],[applications].[name],[applications].[version],[applications].[update_at] from [cellcon].[applications] " +
-                    "order by [applications].[update_at] desc";
-                var result = command.ExecuteReader();
-                while (result.Read())
-                {
-                    ApplicationData applicationData = new ApplicationData();
-                    applicationData.ApplictionName = result["name"].ToString();
-                    applicationData.ApplictionVersion = result["version"].ToString();
-                    applicationData.ApplicationId = int.Parse(result["id"].ToString());
-                    c_ApplicationDatas.Add(applicationData);
-                }
-                //command.CommandText = "select [application_set].id,[application_set].name as cellcon_name,[application_set].version as cellcon_version " +
-                //    "[application_set].update_at as cellcon_update  from [cellcon].[application_set] ";
-
-
-            }
-            return c_ApplicationDatas;
-        }
+        //private List<ApplicationData> GetData()
+        //{
+        //    List<ApplicationData> app_Data = new List<ApplicationData>();
+        //    //(Properties.Settings.Default.APCSProDB))
+        //    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        con.Open();
+        //        SqlCommand command = con.CreateCommand();
+        //        command.CommandText = "select [applications].[id],[applications].[name],[applications].[version],[applications].[update_at] from [cellcon].[applications] " +
+        //            "order by [applications].[update_at] desc";
+        //        var result = command.ExecuteReader();
+        //        while (result.Read())
+        //        {
+        //            ApplicationData applicationData = new ApplicationData();
+        //            applicationData.ApplictionName = result["name"].ToString();
+        //            applicationData.ApplictionVersion = result["version"].ToString();
+        //            applicationData.ApplicationId = int.Parse(result["id"].ToString());
+        //            List<FileData> fileDatas = new List<FileData>();
+        //            using (SqlConnection con2 = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //            {
+        //                con2.Open();
+        //                SqlCommand command2 = con2.CreateCommand();
+        //                command2.CommandText = "select app.id as app_id,app.[name] as [app_name],app.[version] as app_version " +
+        //                " ,app.update_at as app_update_at,  [file].id as [file_id], " +
+        //                " [file].directory as file_directory,[file].[name] as [file_name]," +
+        //                " [file].update_at as file_update_at,[file].[version] as file_version " +
+        //                " ,[file].binary_id as file_binary_id " +
+        //                " from  cellcon.applications as app " +
+        //                " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
+        //                " inner join cellcon.files as [file] on[file].id = app_file.[file_id] " +
+        //                " where app.id = @app_id";
+        //                command2.Parameters.AddWithValue(@"app_id", applicationData.ApplicationId);
+        //               var result2 = command2.ExecuteReader();
+        //                while (result2.Read())
+        //                {
+        //                    FileData fileData = new FileData();
+        //                    fileData.FileId = (int)result2["file_id"];
+        //                    fileData.Name = (string)result2["file_name"];
+        //                    fileData.Directory = (string)result2["file_directory"]; 
+        //                    fileData.FileVersion = (string)result2["file_version"];
+        //                    fileDatas.Add(fileData);
+        //                }
+        //            }
+        //            applicationData.FileDataList = fileDatas;
+        //            app_Data.Add(applicationData);
+        //        }
+              
+        //    }
+        //    return app_Data;
+        //}
         private void UpdateTreeView(List<ApplicationData> applicationDatas)
         {
             treeView1.Nodes.Clear();
             //Add Program List
-            var programNameList = applicationDatas.Select(x => new { x.ApplictionName }).Distinct().ToList();
+            var programNameList = applicationDatas.Select(x => new { x.ApplictionName }).OrderBy(x=>x.ApplictionName).Distinct().ToList();
             int i = 0;
-            foreach (var file in programNameList)
+            foreach (var app in programNameList)
             {
-                treeView1.Nodes.Add(file.ApplictionName);
+                treeView1.Nodes.Add(app.ApplictionName);
 
-                var fileDatas = applicationDatas.Where(x => x.ApplictionName == file.ApplictionName);
-                foreach (var item in fileDatas)
+                var appDatas = applicationDatas.Where(x => x.ApplictionName == app.ApplictionName);
+                int j = 0;
+                foreach (var item in appDatas)
                 {
+                   
                     treeView1.Nodes[i].Nodes.Add(item.ApplictionVersion);
+                    foreach (var fileItem in item.FileDataList)
+                    {
+                        treeView1.Nodes[i].Nodes[j].Nodes.Add(fileItem.Name + ":" + fileItem.FileVersion);
+                        
+                    }
+                    j++;
                 }
                 i++;
             }
@@ -202,16 +234,17 @@ namespace AutoUpdateSetting.View
             }
         }
 
-        private List<TreeNode> GetNodes(TreeNode node)
+        private List<TreeNode> GetNodes(TreeNode node,int rootOpen = 0)
         {
+            rootOpen++;
             List<TreeNode> nodes = new List<TreeNode>();
-            if (node.Nodes.Count > 0)
+            if ((node.Nodes.Count > 0 && rootOpen != 2) || rootOpen == 3)
                 nodes.Add(node);
             foreach (TreeNode n in node.Nodes)
             {
                 if (node.Nodes.Count > 0)
                 {
-                    nodes.AddRange(GetNodes(n));
+                    nodes.AddRange(GetNodes(n,rootOpen));
                 }
             }
             return nodes;
@@ -280,11 +313,7 @@ namespace AutoUpdateSetting.View
             foreach (var item in treeNodeCollection)
             {
                 TreeNode treeNode = (TreeNode)item;
-                if (treeNode.Nodes.Count > 0)
-                {
-                    GetTreeNodeSetToApplicationData(treeNode.Nodes, applicationData);
-                }
-                else
+                if(treeNode.Checked)
                 {
 
                     var applicationList = applicationData.Where(x => x.ApplictionName == treeNode.Parent.Text && x.ApplictionVersion == treeNode.Text && treeNode.Checked).ToList();
@@ -294,6 +323,20 @@ namespace AutoUpdateSetting.View
                         // machine.ApplicationSetId = c_CellconList.Where(x => x.CellconName == comboBoxCellconName.Text);
                     }
                 }
+                if (treeNode.Nodes.Count > 0)
+                {
+                    GetTreeNodeSetToApplicationData(treeNode.Nodes, applicationData);
+                }
+                //else
+                //{
+
+                //    var applicationList = applicationData.Where(x => x.ApplictionName == treeNode.Parent.Text && x.ApplictionVersion == treeNode.Text && treeNode.Checked).ToList();
+                //    foreach (var file in applicationList)
+                //    {
+                //        file.ApplicationSelect = true;
+                //        // machine.ApplicationSetId = c_CellconList.Where(x => x.CellconName == comboBoxCellconName.Text);
+                //    }
+                //}
             }
         }
         private bool ExitFile(string cellconName, string cellconVersion)

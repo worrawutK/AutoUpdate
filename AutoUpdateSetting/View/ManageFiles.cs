@@ -22,52 +22,52 @@ namespace AutoUpdateSetting.View
         private List<FileData> c_FileDatas;
         private List<FileData> c_FileOnServer;
         private MainForm c_MainFrom;
-        public ManageFiles(MainForm mainForm)
+        public ManageFiles(MainForm mainForm,List<FileData> fileDatas)
         {
             InitializeComponent();
             c_FileDatas = new List<FileData>();
-            c_FileOnServer = GetFileDatas();
+            c_FileOnServer = fileDatas;// GetFileDatas();
             c_MainFrom = mainForm;
           //  InitializeView();
         }
-        private List<FileData> GetFileDatas()
-        {
-            List<FileData> fileDataList = new List<FileData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
+        //private List<FileData> GetFileDatas()
+        //{
+        //    List<FileData> fileDataList = new List<FileData>();
+        //    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        conn.Open();
 
-                SqlCommand command = conn.CreateCommand();
+        //        SqlCommand command = conn.CreateCommand();
 
-                // Must assign both transaction object and connection
-                // to Command object for a pending local transaction
-                command.Connection = conn;
+        //        // Must assign both transaction object and connection
+        //        // to Command object for a pending local transaction
+        //        command.Connection = conn;
 
-                try
-                {
-                    command.CommandText = "select [id],[name],[binary_id],[version],[directory] from [cellcon].[files]";
-                    //command.Parameters.AddWithValue("@file", fileData.Data);
-                    var result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        FileData fileData = new FileData();
-                        fileData.FileId = int.Parse(result["id"].ToString());
-                        fileData.Name = result["name"].ToString();
-                        fileData.BinaryId = int.Parse(result["binary_id"].ToString());
-                        fileData.FileVersion = result["version"].ToString();
-                        fileData.Directory = result["directory"].ToString();
-                        fileDataList.Add(fileData);
-                    }
-                    //fileData.BinaryId = int.Parse(fileId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-            return fileDataList;
-        }
+        //        try
+        //        {
+        //            command.CommandText = "select [id],[name],[binary_id],[version],[directory] from [cellcon].[files]";
+        //            //command.Parameters.AddWithValue("@file", fileData.Data);
+        //            var result = command.ExecuteReader();
+        //            while (result.Read())
+        //            {
+        //                FileData fileData = new FileData();
+        //                fileData.FileId = int.Parse(result["id"].ToString());
+        //                fileData.Name = result["name"].ToString();
+        //                fileData.BinaryId = int.Parse(result["binary_id"].ToString());
+        //                fileData.FileVersion = result["version"].ToString();
+        //                fileData.Directory = result["directory"].ToString();
+        //                fileDataList.Add(fileData);
+        //            }
+        //            //fileData.BinaryId = int.Parse(fileId.ToString());
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.ToString());
+        //        }
+        //        conn.Close();
+        //    }
+        //    return fileDataList;
+        //}
         #region View
         //private void InitializeView()
         //{

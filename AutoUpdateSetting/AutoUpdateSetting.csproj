@@ -57,6 +57,7 @@
     <Compile Include="Model\CloningUitility.cs" />
     <Compile Include="Model\FileData.cs" />
     <Compile Include="Model\MachineData.cs" />
+    <Compile Include="Model\ProgramData.cs" />
     <Compile Include="Model\SetDataResult.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

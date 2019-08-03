@@ -20,13 +20,13 @@ namespace AutoUpdateSetting.View
         private List<ApplicationData> c_AppOnServer;
         private MainForm c_MainFrom;
 
-        public ManageApplication(MainForm mainForm)
+        public ManageApplication(MainForm mainForm,List<FileData> fileDatas,List<ApplicationData> applicationDatas)
         {
             InitializeComponent();
             c_ApplictionData = new ApplicationData();
             c_MainFrom = mainForm;
-            c_ApplictionData.FileDataList = GetData();
-            c_AppOnServer = GetApplicationData();
+            c_ApplictionData.FileDataList = fileDatas; //GetData();
+            c_AppOnServer = applicationDatas;// GetApplicationData();
             comboBox1.DataSource = c_ApplictionData.FileDataList.Select(x => x.Directory).Distinct().ToList();
             AddListComboBoxProgramName(c_AppOnServer);
         }
@@ -39,77 +39,79 @@ namespace AutoUpdateSetting.View
                 comboBoxProgramName.Items.Add(item.ApplictionName);
             }
         }
-        private List<ApplicationData> GetApplicationData()
-        {
-            List<ApplicationData> appDataList = new List<ApplicationData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
+        //private List<ApplicationData> GetApplicationData()
+        //{
+        //    List<ApplicationData> appDataList = new List<ApplicationData>();
+        //    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        conn.Open();
 
-                SqlCommand command = conn.CreateCommand();
+        //        SqlCommand command = conn.CreateCommand();
 
-                // Must assign both transaction object and connection
-                // to Command object for a pending local transaction
-                command.Connection = conn;
+        //        // Must assign both transaction object and connection
+        //        // to Command object for a pending local transaction
+        //        command.Connection = conn;
 
-                try
-                {
-                    command.CommandText = "select  [id],[name],[version] from [cellcon].[applications]";
-                    //command.Parameters.AddWithValue("@file", fileData.Data);
-                    var result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        ApplicationData appData = new ApplicationData();
-                        appData.ApplicationId = int.Parse(result["id"].ToString());
-                        appData.ApplictionName = result["name"].ToString();
-                        appData.ApplictionVersion = result["version"].ToString();
-                        appDataList.Add(appData);
-                    }
-                    //fileData.BinaryId = int.Parse(fileId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-            return appDataList;
-        }
-        private List<FileData> GetData()
-        {
-            List<FileData> fileDatas = new List<FileData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
-                SqlCommand command = conn.CreateCommand();
-                command.Connection = conn;
+        //        try
+        //        {
+        //            command.CommandText = "select  [id],[name],[version] from [cellcon].[applications]";
+        //            //command.Parameters.AddWithValue("@file", fileData.Data);
+        //            var result = command.ExecuteReader();
+        //            while (result.Read())
+        //            {
+        //                ApplicationData appData = new ApplicationData
+        //                {
+        //                    ApplicationId = int.Parse(result["id"].ToString()),
+        //                    ApplictionName = result["name"].ToString(),
+        //                    ApplictionVersion = result["version"].ToString()
+        //                };
+        //                appDataList.Add(appData);
+        //            }
+        //            //fileData.BinaryId = int.Parse(fileId.ToString());
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.ToString());
+        //        }
+        //        conn.Close();
+        //    }
+        //    return appDataList;
+        //}
+        //private List<FileData> GetData()
+        //{
+        //    List<FileData> fileDatas = new List<FileData>();
+        //    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        conn.Open();
+        //        SqlCommand command = conn.CreateCommand();
+        //        command.Connection = conn;
 
-                try
-                {
-                    command.CommandText = "select top(10000) [id],[name],[binary_id],[version],[directory],[update_at] from [APCSProDB].[cellcon].[files] order by update_at desc";
-                    //command.Parameters.AddWithValue("@file", "");
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        FileData fileData = new FileData();
-                        fileData.FileId = int.Parse(reader["id"].ToString());
-                        fileData.Name = reader["name"].ToString();
-                        fileData.BinaryId = int.Parse(reader["binary_id"].ToString());
-                        fileData.FileVersion = reader["version"].ToString();
-                        fileData.Directory = reader["directory"].ToString();
-                        fileData.Date = DateTime.Parse(reader["update_at"].ToString());
-                        fileDatas.Add(fileData);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-            return fileDatas;
+        //        try
+        //        {
+        //            command.CommandText = "select top(10000) [id],[name],[binary_id],[version],[directory],[update_at] from [APCSProDB].[cellcon].[files] order by update_at desc";
+        //            //command.Parameters.AddWithValue("@file", "");
+        //            var reader = command.ExecuteReader();
+        //            while (reader.Read())
+        //            {
+        //                FileData fileData = new FileData();
+        //                fileData.FileId = int.Parse(reader["id"].ToString());
+        //                fileData.Name = reader["name"].ToString();
+        //                fileData.BinaryId = int.Parse(reader["binary_id"].ToString());
+        //                fileData.FileVersion = reader["version"].ToString();
+        //                fileData.Directory = reader["directory"].ToString();
+        //                fileData.Date = DateTime.Parse(reader["update_at"].ToString());
+        //                fileDatas.Add(fileData);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.ToString());
+        //        }
+        //        conn.Close();
+        //    }
+        //    return fileDatas;
 
-        }
+        //}
 
         private void ComboBox1_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -127,10 +129,10 @@ namespace AutoUpdateSetting.View
             {
                 treeView1.Nodes.Add(file.Name);
 
-                var fileDatas = fileDataList.Where(x => x.Name == file.Name);
+                var fileDatas = fileDataList.Where(x => x.Name == file.Name).OrderByDescending(x=>x.FileId);
                 foreach (var item in fileDatas)
                 {
-                    treeView1.Nodes[i].Nodes.Add(item.FileVersion + " | " + item.Directory);
+                    treeView1.Nodes[i].Nodes.Add(item.FileVersion);
                 }
                 i++;
             }
@@ -388,6 +390,59 @@ namespace AutoUpdateSetting.View
             var countVersion = appVersion.Split('.');
             string fileNewVersion = countVersion[0] + "." + countVersion[1] + "." + countVersion[2] + "." + (int.Parse(countVersion[3]) + 1);
             textBoxProgramVersion.Text = fileNewVersion;
+        }
+
+        private void TreeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            // only do it if the node became checked:
+            if (e.Node.Checked)
+            {
+
+                int i = 0;
+
+                // for all the nodes in the tree...
+                foreach (TreeNode cur_node in e.Node.TreeView.Nodes)
+                {
+
+                    if (e.Node.Parent == e.Node.TreeView.Nodes[i])
+                    {
+                        foreach (TreeNode item in e.Node.TreeView.Nodes[i].Nodes)
+                        {
+                            if (item != e.Node)
+                            {
+                                // ... uncheck them
+                                item.Checked = false;
+
+                            }
+
+                        }
+                        return;
+                    }
+
+                    i++;
+                }
+            }
+            //if (e.Node.Checked)
+            //{
+            //    CheckedTreeNode(e.Node.TreeView.Nodes, e.Node);
+            //}
+        }
+        private void CheckedTreeNode(TreeNodeCollection treeNodeCollection, TreeNode treeNode)
+        {
+            // for all the nodes in the tree...
+            foreach (TreeNode cur_node in treeNodeCollection)
+            {
+                if (cur_node.Nodes.Count > 0)
+                {
+                     CheckedTreeNode(cur_node.Nodes, treeNode);
+                }
+                if (cur_node != treeNode)
+                {
+                    // ... uncheck them
+                    cur_node.Checked = false;
+                }
+            }
+
         }
     }
 }

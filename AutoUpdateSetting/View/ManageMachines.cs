@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AutoUpdateSetting.Model;
 using System.Data.SqlClient;
+using System.Runtime.InteropServices;
 
 namespace AutoUpdateSetting.View
 {
@@ -17,43 +18,43 @@ namespace AutoUpdateSetting.View
         private List<CellconData> c_CellconList;
         private List<MachineData> c_MachineList;
         private MainForm c_MainFrom;
-        public ManageMachines(MainForm mainForm)
+        public ManageMachines(MainForm mainForm,List<CellconData> cellconDatas)
         {
             InitializeComponent();
-            c_CellconList = new List<CellconData>();
             c_MachineList = new List<MachineData>();
-            var cellconDatas = GetApplicationCellconData();
-            UpdateComboBox(cellconDatas);
+            c_CellconList = cellconDatas;//GetApplicationCellconData();
+            UpdateComboBox(c_CellconList);
             var mcDatas = GetMachineData();
             UpdateTreeViewMachine(mcDatas);
             c_MainFrom = mainForm;
         }
 
-        private List<CellconData> GetApplicationCellconData()
-        {
-            //(Properties.Settings.Default.APCSProDB))
-            using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                con.Open();
-                SqlCommand command = con.CreateCommand();
-                command.CommandText = "select [application_sets].[id],[application_sets].[name],[application_sets].[version],[application_sets].[update_at] from [cellcon].[application_sets] " +
-                    "order by [application_sets].[update_at] desc";
-                var result = command.ExecuteReader();
-                while (result.Read())
-                {
-                    CellconData cellconData = new CellconData();
-                    cellconData.CellconName = result["name"].ToString();
-                    cellconData.CellconVersion = result["version"].ToString();
-                    cellconData.CellconId = int.Parse(result["id"].ToString());
-                    c_CellconList.Add(cellconData);
-                }
-                //command.CommandText = "select [application_set].id,[application_set].name as cellcon_name,[application_set].version as cellcon_version " +
-                //    "[application_set].update_at as cellcon_update  from [cellcon].[application_set] ";
+        //private List<CellconData> GetApplicationCellconData()
+        //{
+        //    //(Properties.Settings.Default.APCSProDB))
+        //    List<CellconData> cellconDatas = new List<CellconData>();
+        //    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        con.Open();
+        //        SqlCommand command = con.CreateCommand();
+        //        command.CommandText = "select [application_sets].[id],[application_sets].[name],[application_sets].[version],[application_sets].[update_at] from [cellcon].[application_sets] " +
+        //            "order by [application_sets].[update_at] desc";
+        //        var result = command.ExecuteReader();
+        //        while (result.Read())
+        //        {
+        //            CellconData cellconData = new CellconData();
+        //            cellconData.CellconName = result["name"].ToString();
+        //            cellconData.CellconVersion = result["version"].ToString();
+        //            cellconData.CellconId = int.Parse(result["id"].ToString());
+        //            cellconDatas.Add(cellconData);
+        //        }
+        //        //command.CommandText = "select [application_set].id,[application_set].name as cellcon_name,[application_set].version as cellcon_version " +
+        //        //    "[application_set].update_at as cellcon_update  from [cellcon].[application_set] ";
 
 
-            }
-            return c_CellconList;
-        }
+        //    }
+        //    return cellconDatas;
+        //}
 
         private List<MachineData> GetMachineData()
         {
@@ -105,11 +106,18 @@ namespace AutoUpdateSetting.View
         private void UpdateTreeViewCellconVersion(List<CellconData> cellconApplicationDatas)
         {
             treeViewCellconVersion.Nodes.Clear();
-            foreach (var file in cellconApplicationDatas)
+            int i = 0;
+            foreach (var file in cellconApplicationDatas.OrderByDescending(x=>x.CellconId))
             {
                 treeViewCellconVersion.Nodes.Add(file.CellconVersion);
-
+                var appList = file.ApplicationDataList.Select(x => new { x.ApplicationId, x.ApplictionName, x.ApplictionVersion }).Distinct().OrderBy(x=>x.ApplictionName);
+                foreach (var app in appList)
+                {
+                    treeViewCellconVersion.Nodes[i].Nodes.Add(app.ApplictionName + "|" + app.ApplictionVersion);
+                }
+                i++;
             }
+            RemoveCheckBoxes(treeViewCellconVersion);
         }
         private void UpdateTreeViewMachine(List<MachineData> machineDatas)
         {
@@ -272,6 +280,34 @@ namespace AutoUpdateSetting.View
 
         private void TreeViewCellconVersion_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            //// only do it if the node became checked:
+            //if (e.Node.Checked)
+            //{
+
+            //    int i = 0;
+
+            //    // for all the nodes in the tree...
+            //    foreach (TreeNode cur_node in e.Node.TreeView.Nodes)
+            //    {
+
+            //        if (e.Node.Parent == e.Node.TreeView.Nodes[i])
+            //        {
+            //            foreach (TreeNode item in e.Node.TreeView.Nodes[i].Nodes)
+            //            {
+            //                if (item != e.Node)
+            //                {
+            //                    // ... uncheck them
+            //                    item.Checked = false;
+
+            //                }
+
+            //            }
+            //            return;
+            //        }
+
+            //        i++;
+            //    }
+            //}
             // only do it if the node became checked:
             if (e.Node.Checked)
             {
@@ -285,7 +321,7 @@ namespace AutoUpdateSetting.View
             {
                 if (cur_node.Nodes.Count > 0)
                 {
-                    CheckedTreeNode(cur_node.Nodes, treeNode);
+                   // CheckedTreeNode(cur_node.Nodes, treeNode);
                 }
                 if (cur_node != treeNode)
                 {
@@ -293,6 +329,72 @@ namespace AutoUpdateSetting.View
                     cur_node.Checked = false;
                 }
             }
+
         }
+        #region RemoveCheck
+        public const int TVIF_STATE = 0x8;
+        public const int TVIS_STATEIMAGEMASK = 0xF000;
+        public const int TV_FIRST = 0x1100;
+        public const int TVM_SETITEM = TV_FIRST + 63;
+
+        public struct TVITEM
+        {
+            public int mask;
+            public IntPtr hItem;
+            public int state;
+            public int stateMask;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public String lpszText;
+            public int cchTextMax;
+            public int iImage;
+            public int iSelectedImage;
+            public int cChildren;
+            public IntPtr lParam;
+        }
+
+        [DllImport("user32.dll")]
+        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+
+        private void RemoveCheckBoxes(TreeView tree)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            foreach (TreeNode n in tree.Nodes)
+            {
+                if (n.Nodes.Count > 0)
+                {
+                    nodes.AddRange(GetNodes(n));
+                }
+            }
+
+            foreach (TreeNode n in nodes)
+            {
+                TVITEM tvi = new TVITEM();
+                tvi.hItem = n.Handle;
+                tvi.mask = TVIF_STATE;
+                tvi.stateMask = TVIS_STATEIMAGEMASK;
+                tvi.state = 0;
+                IntPtr lparam = Marshal.AllocHGlobal(Marshal.SizeOf(tvi));
+                Marshal.StructureToPtr(tvi, lparam, false);
+                SendMessage(this.treeViewCellconVersion.Handle, TVM_SETITEM, IntPtr.Zero, lparam);
+            }
+        }
+
+        private List<TreeNode> GetNodes(TreeNode node, int countNode = 0)
+        {
+            countNode++;
+            List<TreeNode> nodes = new List<TreeNode>();
+            if (countNode == 2)
+                nodes.Add(node);
+            foreach (TreeNode n in node.Nodes)
+            {
+                if (node.Nodes.Count > 0)
+                {
+                    nodes.AddRange(GetNodes(n, countNode));
+                }
+            }
+            return nodes;
+        }
+        #endregion
     }
 }
