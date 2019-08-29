@@ -115,7 +115,7 @@ namespace AutoUpdateSetting.View
 
         private void ComboBox1_SelectedValueChanged(object sender, EventArgs e)
         {
-            var data = c_ApplictionData.FileDataList.Where(x => x.Directory == ((ComboBox)sender).SelectedValue.ToString()).ToList();
+            var data = c_ApplictionData.FileDataList.Where(x => x.Directory.Contains(((ComboBox)sender).SelectedValue.ToString())).ToList();
             UpdateTreeView(data);
         }
 
@@ -132,7 +132,7 @@ namespace AutoUpdateSetting.View
                 var fileDatas = fileDataList.Where(x => x.Name == file.Name).OrderByDescending(x=>x.FileId);
                 foreach (var item in fileDatas)
                 {
-                    treeView1.Nodes[i].Nodes.Add(item.FileVersion);
+                    treeView1.Nodes[i].Nodes.Add(item.FileVersion + "|" + item.Directory);
                 }
                 i++;
             }

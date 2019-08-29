@@ -92,6 +92,7 @@
             // 
             // textBoxProgramVersion
             // 
+            this.textBoxProgramVersion.Enabled = false;
             this.textBoxProgramVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.textBoxProgramVersion.Location = new System.Drawing.Point(207, 70);
             this.textBoxProgramVersion.Name = "textBoxProgramVersion";
