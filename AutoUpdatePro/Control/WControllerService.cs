@@ -247,28 +247,37 @@ namespace AutoUpdateProLibrary.Control
         //}
         public UpdateProgramResult UpdateProgram(List<FileData> fileDatas)
         {
+            Log.WriteMessage("1");
+            int i = 0;
             var fileList = fileDatas.Select(x => new { x.FileName ,x.FileBinary,x.FileDirectory }).Distinct().ToList();
             foreach (FileData fileData in fileDatas)
             {
+                i++;
+              
                 if (fileData.FileName.Contains(".exe") && !fileData.FileName.Contains(".config"))
                 {
                    // FileInfo fi = new FileInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
                    // FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
                    //var versionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(fileData.FileDirectory, fileData.FileName));
                 peocessCheck:
+                   
                     Process[] processes = Process.GetProcessesByName(fileData.FileName.Replace(".exe", ""));
                     if (processes.Count() >= 1)
                     {
+                        Log.WriteMessage("4[" + i + "]");
                         foreach (var process in processes)
                         {
+                            Log.WriteMessage("5[" + i + "]");
                             process.Kill();
                             System.Threading.Thread.Sleep(500);
+                            Log.WriteMessage("6[" + i + "]");
                         }
                         goto peocessCheck;
                     }
                 }
               //  File.Copy(Path.Combine(fileData.FileDirectory, fileData.FileName), Path.Combine(fileData.FileDirectory, fileData.FileName));
             }
+           
             foreach (FileData fileData in fileDatas)
             {
                 ResultBase result = ByteArrayToFile(Path.Combine(fileData.FileDirectory, fileData.FileName), fileData.FileBinary);

@@ -66,7 +66,7 @@ namespace AutoUpdateProLibrary
                 string pathBackpup = Path.Combine(Directory.GetCurrentDirectory(), "Backup");
                 c_FileDatas = c_ControllerService.LoadFile(Path.Combine(path, fileName));
 
-
+                
                 List<FileDataInfo> newFileInfo = c_ControllerService.GetFilesInfo(c_CellIp);
 
                 //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
@@ -74,32 +74,32 @@ namespace AutoUpdateProLibrary
                 var application = datas.Select(x => new { x.ApplicationSetId }).Distinct().ToList();
                 if (application.Count > 1)
                 {
-                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, "โปรแกรม Machine ไม่ตรงกัน กรุณาติดต่อ System เพื่อเช็คโปรแกรมของ Machine  \nCellconIP:" + AppSettingHelper.GetAppSettingsValue("CellConIp"));
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[application]", "โปรแกรม Machine ไม่ตรงกัน กรุณาติดต่อ System เพื่อเช็คโปรแกรมของ Machine  \nCellconIP:" + AppSettingHelper.GetAppSettingsValue("CellConIp"));
                 }else if (datas.Count == 0)
                 {
-                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, "Cellcon Ip:" + c_CellIp + " ยังไม่ได้ถูก Set Machine ไว้ กรุณาติดต่อ System ");
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[datas]", "Cellcon Ip:" + c_CellIp + " ยังไม่ได้ถูก Set Machine ไว้ กรุณาติดต่อ System ");
                 }
                 ////เลือกใช้โปรแกรมของ Machine เดียว *โปรแกรมแต่ละเครื่องเหมือนกัน
                 //var programMachine = newFileInfo.Select(x => x.MachineId).Distinct().ToList();
                 //var programCellcon = newFileInfo.Where(x => x.MachineId == programMachine[0]).ToList();
-
+               
                 CheckUpdateResult checkUpdateResult = c_ControllerService.CheckUpdate(newFileInfo, c_FileDatas);
                 if (!checkUpdateResult.IsUpdate)
                 {
                     if (c_FileDatas == null)
                     {
-                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, checkUpdateResult.Cause);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[c_FileDatas is null]", checkUpdateResult.Cause);
                     }
                     //Start Program
                     c_ControllerService.StartProgram(c_FileDatas);
                     if (checkUpdateResult.IsAlarm)
                     {
-                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, checkUpdateResult.Cause);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[StartProgram]", checkUpdateResult.Cause);
                     }
                     //Debug.Print("Not Update:" + (DateTime.Now - dateTime).ToString());
                     return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
                 }
-
+               
                 //Debug.Print("Before GetFiles:" + (DateTime.Now - dateTime).ToString());
                 List<FileData> newFileData = c_ControllerService.GetFiles((application.FirstOrDefault()).ApplicationSetId);
                 //Debug.Print("After GetFiles:" + (DateTime.Now - dateTime).ToString());
@@ -109,9 +109,10 @@ namespace AutoUpdateProLibrary
                     SaveFileResult saveFileResult = c_ControllerService.SaveFile(c_FileDatas, pathBackpup, fileName);
                     if (!saveFileResult.IsPass)
                     {
-                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, saveFileResult.Cause);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[SaveFile]", saveFileResult.Cause);
                     }
                 }
+                
                 c_FileDatas = newFileData;
                 //Coppy new file to old file (Replete)
                 //Debug.Print("Before UpdateProgram:" + (DateTime.Now - dateTime).ToString());
@@ -119,21 +120,23 @@ namespace AutoUpdateProLibrary
                 //Debug.Print("After UpdateProgram:" + (DateTime.Now - dateTime).ToString());
                 if (!updateProgramResult.IsPass)
                 {
-                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, updateProgramResult.Cause);
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[UpdateProgram]", updateProgramResult.Cause);
                 }
+                
                 //save history to DbApcsPro
                 foreach (var item in datas)
                 {
                     c_ControllerService.SaveHistoryToDb(item.MachineId,item.ApplicationSetId);
                 }
-               
 
+              
 
                 c_ControllerService.SaveFile(c_FileDatas, path, fileName);
 
                 //Start Program
                 UpdateResult updateResult = c_ControllerService.StartProgram(c_FileDatas);
                 //Debug.Print("Update:" + (DateTime.Now - dateTime).ToString());
+                
                 return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
             }
             catch (Exception ex)

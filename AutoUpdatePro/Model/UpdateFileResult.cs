@@ -22,7 +22,7 @@ namespace AutoUpdateProLibrary.Model
         {
             this.IsPass = false;
             this.Cause = cause;
-            Log.WriteMessage(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "|" + functionName + "|" + cause);
+            Log.WriteMessage(functionName + "|" + cause);
         }
         public UpdateFileResult(string functionName)
             :this(functionName,"OK")

@@ -13,7 +13,7 @@ namespace AutoUpdateProLibrary.Model
         {
             try
             {
-                using (StreamWriter w = new StreamWriter(path + @"\log.txt"))
+                using (StreamWriter w = new StreamWriter(path + @"\log.txt",true))
                 {
                     w.WriteLine(message);
                     w.Close();
@@ -26,7 +26,7 @@ namespace AutoUpdateProLibrary.Model
         }
         public static void WriteMessage(string message)
         {
-            WriteMessage(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), message);
+            WriteMessage(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " : " + message);
         }
     }
 }

@@ -29,6 +29,7 @@ namespace AutoUpdateProLibrary
             }
             catch (Exception ex)
             {
+                Log.WriteMessage("InitializeComponent:" + ex.Message.ToString());
                 MessageBox.Show(ex.Message.ToString());
             }
 
@@ -56,7 +57,8 @@ namespace AutoUpdateProLibrary
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+                Log.WriteMessage("MainForm_Load:" + ex.Message.ToString());
+                MessageBox.Show("Exception" + ex.ToString());
             }
         }
         public bool PingHost(string nameOrAddress)
@@ -96,6 +98,7 @@ namespace AutoUpdateProLibrary
                         UpdateFileResult fileResult = c_CellCon.UpdateFile();
                         if (!fileResult.IsPass)
                         {
+                            Log.WriteMessage("UpdateFile: " + fileResult.Cause);
                             c_SynchronizationContext.Post(x => ConfirmCloseProgram(fileResult.Cause), null);
                             return;
                         }
@@ -104,17 +107,25 @@ namespace AutoUpdateProLibrary
                     }
                 }
                 Log.WriteMessage("PingHost:ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") + " ได้");
-                MessageBoxDialog.ShowMessageDialog("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
-                    " ได้", "AutoUpdate");
+                c_SynchronizationContext.Post(x => this.ShowMessage("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
+                    " ได้", "AutoUpdate"), null);
+                
+                //MessageBoxDialog.ShowMessageDialog("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
+                //    " ได้", "AutoUpdate");
             }
             catch (Exception ex)
             {
                 Log.WriteMessage("UpdateFile:" + ex.Message.ToString());
-                MessageBoxDialog.ShowMessageDialog("UpdateFile", ex.Message.ToString(), "Exception");
+                c_SynchronizationContext.Post(x => this.ShowMessage("UpdateFile", ex.Message.ToString(), "Exception"), null);
+   
             }
            
            
 
+        }
+        private void ShowMessage(string title,string message,string messageType)
+        {
+            MessageBoxDialog.ShowMessageDialog(title, message, messageType);
         }
         private void ConfirmCloseProgram(string message)
         {
