@@ -1,4 +1,5 @@
 ﻿using AutoUpdateSetting.Model;
+using MessageDialog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -250,11 +251,11 @@ namespace AutoUpdateSetting
             var machines = c_MachineList.Where(x => x.MachineSelect).ToList();
             if (!SetToDb(machines, appId.Value))
             {
-                MessageDialog.MessageBoxDialog.ShowMessageDialog("Register", "Register Fail!","Error");
+                MessageBoxDialog.ShowMessageDialog("Register", "Register Fail!","Error");
             }
             else
             {
-                MessageDialog.MessageBoxDialog.ShowMessageDialog("Register", "Register Succeed!", "Succeed");
+                MessageBoxDialog.ShowMessageDialog("Register", "Register Succeed!", "Succeed");
                 this.DialogResult = DialogResult.OK;
             }
         }

@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using AutoUpdateSetting.Model;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;
+using MessageDialog;
 
 namespace AutoUpdateSetting.View
 {
@@ -255,11 +256,11 @@ namespace AutoUpdateSetting.View
             var machines = c_MachineList.Where(x => x.MachineSelect).ToList();
             if (!SetToDb(machines, appId.Value))
             {
-                MessageDialog.MessageBoxDialog.ShowMessageDialog("Register", "Register Fail!", "Error");
+                MessageBoxDialog.ShowMessageDialog("Register", "Register Fail!", "Error");
             }
             else
             {
-                MessageDialog.MessageBoxDialog.ShowMessageDialog("Register", "Register Succeed!", "Succeed");
+                MessageBoxDialog.ShowMessageDialog("Register", "Register Succeed!", "Succeed");
                 c_MainFrom.panelMain.Controls.Clear();
               //  this.DialogResult = DialogResult.OK;
             }
