@@ -128,11 +128,17 @@ namespace AutoUpdateSetting.View
             foreach (var file in programNameList)
             {
                 treeView1.Nodes.Add(file.Name);
-
+                int coutFileData = 0;
                 var fileDatas = fileDataList.Where(x => x.Name == file.Name).OrderByDescending(x=>x.FileId);
                 foreach (var item in fileDatas)
                 {
-                    treeView1.Nodes[i].Nodes.Add(item.FileVersion + "|" + item.Directory);
+                    coutFileData++;
+                    treeView1.Nodes[i].Nodes.Add(item.FileVersion + "|" + item.Directory,item.FileVersion + "|" + item.Directory);
+                    if (coutFileData == 1)
+                    {
+                        treeView1.Nodes[i].Nodes[item.FileVersion + "|" + item.Directory].Checked = true;
+                    }
+                   
                 }
                 i++;
             }

@@ -77,7 +77,7 @@
             this.treeView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.treeView1.Location = new System.Drawing.Point(195, 122);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(452, 280);
+            this.treeView1.Size = new System.Drawing.Size(452, 524);
             this.treeView1.TabIndex = 18;
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.TreeView1_AfterCheck);
             // 
@@ -97,9 +97,9 @@
             // 
             this.pictureBoxRegister.BackColor = System.Drawing.Color.Transparent;
             this.pictureBoxRegister.Image = global::AutoUpdateSetting.Properties.Resources.button_resister;
-            this.pictureBoxRegister.Location = new System.Drawing.Point(36, 432);
+            this.pictureBoxRegister.Location = new System.Drawing.Point(17, 185);
             this.pictureBoxRegister.Name = "pictureBoxRegister";
-            this.pictureBoxRegister.Size = new System.Drawing.Size(246, 64);
+            this.pictureBoxRegister.Size = new System.Drawing.Size(166, 64);
             this.pictureBoxRegister.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxRegister.TabIndex = 23;
             this.pictureBoxRegister.TabStop = false;

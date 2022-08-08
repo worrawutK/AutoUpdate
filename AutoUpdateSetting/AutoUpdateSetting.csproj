@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageDialog.Designer.cs">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\ApplicationData.cs" />
     <Compile Include="Model\CellconData.cs" />
     <Compile Include="Model\CloningUitility.cs" />

@@ -285,153 +285,274 @@ namespace AutoUpdateSetting
         #endregion
         private List<ProgramData> GetProgramData()
         {
+            DateTime dateTime = DateTime.Now;
             List<ProgramData> programnDataList = new List<ProgramData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
             {
-                conn.Open();
-                SqlCommand command = conn.CreateCommand();
-                command.Connection = conn;
-
-                try
+                con.Open();
+                SqlCommand cmd = con.CreateCommand();
+                cmd.Connection = con;
+                cmd.CommandText = "SELECT [name] FROM cellcon.application_sets GROUP BY [name]";
+                var rd = cmd.ExecuteReader();
+                while (rd.Read())
                 {
-                    command.CommandText = "select app_set.id as cell_id,app_set.[name] as cell_name, app_set.[version] as cell_version,app_set.update_at as cell_update_at" +
-                                        " ,app.id as app_id,app.[name] as [app_name],app.[version] as app_version,app.update_at as app_update_at, " +
-                                        " [file].id as [file_id],[file].directory as file_directory,[file].[name] as [file_name]," +
-                                        " [file].update_at as file_update_at,[file].[version] as file_version ,[file].binary_id as file_binary_id " +
-                                        " from cellcon.application_sets as app_set " +
-                                        " inner join cellcon.application_application_sets as cell_app on cell_app.application_set_id = app_set.id " +
-                                        " inner join cellcon.applications as app on app.id = cell_app.application_id " +
-                                        " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
-                                        " inner join cellcon.files as [file] on[file].id = app_file.[file_id] ";
-                    //command.Parameters.AddWithValue("@file", "");
-                    var reader = command.ExecuteReader();
-                    while (reader.Read())
+                    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
                     {
-                        ProgramData programData = new ProgramData
+                        conn.Open();
+                        SqlCommand command = conn.CreateCommand();
+                        command.Connection = conn;
+
+                        try
                         {
-                            Cell_Id = int.Parse(reader["cell_id"].ToString()),
-                            Cell_Name = reader["cell_name"].ToString(),
-                            Cell_Version = reader["cell_version"].ToString(),
-                            Cell_Update_At = (DateTime)reader["cell_update_at"],
+                            //command.CommandText = "select app_set.id as cell_id,app_set.[name] as cell_name, app_set.[version] as cell_version,app_set.update_at as cell_update_at" +
+                            //             " ,app.id as app_id,app.[name] as [app_name],app.[version] as app_version,app.update_at as app_update_at, " +
+                            //             " [file].id as [file_id],[file].directory as file_directory,[file].[name] as [file_name]," +
+                            //             " [file].update_at as file_update_at,[file].[version] as file_version ,[file].binary_id as file_binary_id " +
+                            //             " from cellcon.application_sets as app_set " +
+                            //             " inner join cellcon.application_application_sets as cell_app on cell_app.application_set_id = app_set.id " +
+                            //             " inner join cellcon.applications as app on app.id = cell_app.application_id " +
+                            //             " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
+                            //             " inner join cellcon.files as [file] on[file].id = app_file.[file_id] ";
+                            command.CommandText = "SELECT app_detail.* " +
+                                                  "FROM(SELECT TOP 100 * FROM cellcon.application_sets WHERE [name] = @cellcon_name ORDER BY update_at DESC) AS app_set "+
+                                                    "INNER JOIN(select app_set.id as cell_id,app_set.[name] as cell_name, app_set.[version] as cell_version,app_set.update_at as cell_update_at , " +
+                                                    "app.id as app_id,app.[name] as [app_name],app.[version] as app_version,app.update_at as app_update_at,  [file].id as [file_id], " +
+                                                    "[file].directory as file_directory,[file].[name] as [file_name], [file].update_at as file_update_at,[file].[version] as file_version ,[file].binary_id as file_binary_id " +
+                                                    "from cellcon.application_sets as app_set " +
+                                                    "inner join cellcon.application_application_sets as cell_app on cell_app.application_set_id = app_set.id " +
+                                                    "inner join cellcon.applications as app on app.id = cell_app.application_id " +
+                                                    "inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
+                                                    "inner join cellcon.files as [file] on[file].id = app_file.[file_id] ) AS app_detail ON app_detail.cell_id = app_set.id";
+                            command.Parameters.Add("@cellcon_name", SqlDbType.VarChar).Value = rd["name"].ToString();
+                            var reader = command.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                ProgramData programData = new ProgramData
+                                {
+                                    Cell_Id = int.Parse(reader["cell_id"].ToString()),
+                                    Cell_Name = reader["cell_name"].ToString(),
+                                    Cell_Version = reader["cell_version"].ToString(),
+                                    Cell_Update_At = (DateTime)reader["cell_update_at"],
 
-                            App_Id = (int)reader["app_id"],
-                            App_Name = (string)reader["app_name"],
-                            App_Version = (string)reader["app_version"],
-                            App_Update_At = (DateTime)reader["app_update_at"],
+                                    App_Id = (int)reader["app_id"],
+                                    App_Name = (string)reader["app_name"],
+                                    App_Version = (string)reader["app_version"],
+                                    App_Update_At = (DateTime)reader["app_update_at"],
 
-                            File_Id = (int)reader["file_id"],
-                            File_Name = (string)reader["file_name"],
-                            File_Directory = (string)reader["file_directory"],
-                            File_Version = (string)reader["file_version"],
-                            File_Update_At = (DateTime)reader["file_update_at"],
-                            File_Binary_Id = (int)reader["file_binary_id"]
-                        };
-                        programnDataList.Add(programData);
+                                    File_Id = (int)reader["file_id"],
+                                    File_Name = (string)reader["file_name"],
+                                    File_Directory = (string)reader["file_directory"],
+                                    File_Version = (string)reader["file_version"],
+                                    File_Update_At = (DateTime)reader["file_update_at"],
+                                    File_Binary_Id = (int)reader["file_binary_id"]
+                                };
+                                programnDataList.Add(programData);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
+                        conn.Close();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
+                cmd.Connection.Close();
             }
+          
+            Debug.Print("GetProgramData:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
             return programnDataList;
 
         }
         #region GetData
         private List<FileData> GetFileDatas()
         {
+            DateTime dateTime = DateTime.Now;
             List<FileData> fileDataList = new List<FileData>();
-            using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
-            {
-                conn.Open();
-
-                SqlCommand command = conn.CreateCommand();
-
-                // Must assign both transaction object and connection
-                // to Command object for a pending local transaction
-                command.Connection = conn;
-
-                try
-                {
-                    command.CommandText = "select [id],[name],[binary_id],[version],[directory] from [cellcon].[files]";
-                    //command.Parameters.AddWithValue("@file", fileData.Data);
-                    var result = command.ExecuteReader();
-                    while (result.Read())
-                    {
-                        FileData fileData = new FileData
-                        {
-                            FileId = int.Parse(result["id"].ToString()),
-                            Name = result["name"].ToString(),
-                            BinaryId = int.Parse(result["binary_id"].ToString()),
-                            FileVersion = result["version"].ToString(),
-                            Directory = result["directory"].ToString()
-                        };
-                        fileDataList.Add(fileData);
-                    }
-                    //fileData.BinaryId = int.Parse(fileId.ToString());
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
-                }
-                conn.Close();
-            }
-            return fileDataList;
-        }
-
-        private List<ApplicationData> GetApplicationData()
-        {
-            List<ApplicationData> app_Data = new List<ApplicationData>();
-            //(Properties.Settings.Default.APCSProDB))
             using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
             {
                 con.Open();
-                SqlCommand command = con.CreateCommand();
-                command.CommandText = "select [applications].[id],[applications].[name],[applications].[version],[applications].[update_at] from [cellcon].[applications] " +
-                    "order by [applications].[update_at] desc";
-                var result = command.ExecuteReader();
-                while (result.Read())
+                SqlCommand cmd = con.CreateCommand();
+                cmd.Connection = con;
+                cmd.CommandText = "select [name],directory from [cellcon].[files] group by [name],directory";
+                var data =  cmd.ExecuteReader();
+                while (data.Read())
                 {
-                    ApplicationData applicationData = new ApplicationData
+                    using (SqlConnection conn = new SqlConnection(Properties.Settings.Default.APCSProDB))
                     {
-                        ApplictionName = result["name"].ToString(),
-                        ApplictionVersion = result["version"].ToString(),
-                        ApplicationId = int.Parse(result["id"].ToString())
-                    };
-                    List<FileData> fileDatas = new List<FileData>();
-                    using (SqlConnection con2 = new SqlConnection(Properties.Settings.Default.APCSProDB))
-                    {
-                        con2.Open();
-                        SqlCommand command2 = con2.CreateCommand();
-                        command2.CommandText = "select app.id as app_id,app.[name] as [app_name],app.[version] as app_version " +
-                        " ,app.update_at as app_update_at,  [file].id as [file_id], " +
-                        " [file].directory as file_directory,[file].[name] as [file_name]," +
-                        " [file].update_at as file_update_at,[file].[version] as file_version " +
-                        " ,[file].binary_id as file_binary_id " +
-                        " from  cellcon.applications as app " +
-                        " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
-                        " inner join cellcon.files as [file] on[file].id = app_file.[file_id] " +
-                        " where app.id = @app_id";
-                        command2.Parameters.AddWithValue(@"app_id", applicationData.ApplicationId);
-                        var result2 = command2.ExecuteReader();
-                        while (result2.Read())
+                        conn.Open();
+
+                        SqlCommand command = conn.CreateCommand();
+
+                        // Must assign both transaction object and connection
+                        // to Command object for a pending local transaction
+                        command.Connection = conn;
+
+                        try
                         {
-                            FileData fileData = new FileData
+                            command.CommandText = "select top 30 [id],[name],[binary_id],[version],[directory] from [cellcon].[files]  " +
+                                                    "where [name] = @file_name and directory = @directory " +
+                                                    "order by update_at desc";
+                            //command.CommandText = "select [id],[name],[binary_id],[version],[directory] from [cellcon].[files]";
+                            command.Parameters.Add("@file_name", SqlDbType.VarChar).Value = data["name"].ToString();
+                            command.Parameters.Add("@directory", SqlDbType.VarChar).Value = data["directory"].ToString();
+                            var result = command.ExecuteReader();
+                            while (result.Read())
                             {
-                                FileId = (int)result2["file_id"],
-                                Name = (string)result2["file_name"],
-                                Directory = (string)result2["file_directory"],
-                                FileVersion = (string)result2["file_version"]
-                            };
-                            fileDatas.Add(fileData);
+                                FileData fileData = new FileData
+                                {
+                                    FileId = int.Parse(result["id"].ToString()),
+                                    Name = result["name"].ToString(),
+                                    BinaryId = int.Parse(result["binary_id"].ToString()),
+                                    FileVersion = result["version"].ToString(),
+                                    Directory = result["directory"].ToString()
+                                };
+                                fileDataList.Add(fileData);
+                            }
+                            //fileData.BinaryId = int.Parse(fileId.ToString());
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
+                        }
+                        conn.Close();
                     }
-                    applicationData.FileDataList = fileDatas;
-                    app_Data.Add(applicationData);
                 }
 
             }
+     
+            Debug.Print("GetFileDatas:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+            return fileDataList;
+        }
+
+        //private List<ApplicationData> GetApplicationData()
+        //{
+        //    DateTime dateTime = DateTime.Now;
+        //    List<ApplicationData> app_Data = new List<ApplicationData>();
+        //    //(Properties.Settings.Default.APCSProDB))
+        //    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //    {
+        //        con.Open();
+        //        SqlCommand command = con.CreateCommand();
+        //        command.CommandText = "select [applications].[id],[applications].[name],[applications].[version],[applications].[update_at] from [cellcon].[applications] " +
+        //            "order by [applications].[update_at] desc";
+        //        var result = command.ExecuteReader();
+        //        Debug.Print("GetApplicationData1:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+        //        while (result.Read())
+        //        {
+        //            ApplicationData applicationData = new ApplicationData
+        //            {
+        //                ApplictionName = result["name"].ToString(),
+        //                ApplictionVersion = result["version"].ToString(),
+        //                ApplicationId = int.Parse(result["id"].ToString())
+        //            };
+        //            List<FileData> fileDatas = new List<FileData>();
+        //            using (SqlConnection con2 = new SqlConnection(Properties.Settings.Default.APCSProDB))
+        //            {
+        //                con2.Open();
+        //                SqlCommand command2 = con2.CreateCommand();
+        //                command2.CommandText = "select app.id as app_id,app.[name] as [app_name],app.[version] as app_version " +
+        //                " ,app.update_at as app_update_at,  [file].id as [file_id], " +
+        //                " [file].directory as file_directory,[file].[name] as [file_name]," +
+        //                " [file].update_at as file_update_at,[file].[version] as file_version " +
+        //                " ,[file].binary_id as file_binary_id " +
+        //                " from  cellcon.applications as app " +
+        //                " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
+        //                " inner join cellcon.files as [file] on[file].id = app_file.[file_id] " +
+        //                " where app.id = @app_id";
+        //                command2.Parameters.AddWithValue(@"app_id", applicationData.ApplicationId);
+        //                var result2 = command2.ExecuteReader();
+        //                Debug.Print("GetApplicationData2:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+        //                while (result2.Read())
+        //                {
+        //                    FileData fileData = new FileData
+        //                    {
+        //                        FileId = (int)result2["file_id"],
+        //                        Name = (string)result2["file_name"],
+        //                        Directory = (string)result2["file_directory"],
+        //                        FileVersion = (string)result2["file_version"]
+        //                    };
+        //                    fileDatas.Add(fileData);
+        //                }
+        //            }
+        //            applicationData.FileDataList = fileDatas;
+        //            app_Data.Add(applicationData);
+        //        }
+
+        //    }
+        //    Debug.Print("GetApplicationData:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+        //    return app_Data;
+        //}
+        private List<ApplicationData> GetApplicationData()
+        {
+            DateTime dateTime = DateTime.Now;
+            List<ApplicationData> app_Data = new List<ApplicationData>();
+            //(Properties.Settings.Default.APCSProDB))
+            using (SqlConnection conGetAppName = new SqlConnection(Properties.Settings.Default.APCSProDB))
+            {
+                conGetAppName.Open();
+                SqlCommand commandGetName = conGetAppName.CreateCommand();
+                commandGetName.CommandText = "select [name] from [cellcon].[applications] group by [name] order by [name] desc";
+                var resultGetName = commandGetName.ExecuteReader();
+            //    Debug.Print("GetApplicationData0:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+                while (resultGetName.Read())
+                {
+                    using (SqlConnection con = new SqlConnection(Properties.Settings.Default.APCSProDB))
+                    {
+                        con.Open();
+                        SqlCommand command = con.CreateCommand();
+                        command.CommandText = "select top 30 [applications].[id],[applications].[name],[applications].[version],[applications].[update_at]" +
+                                    "from [cellcon].[applications]" +
+                                    "where[name] = @app_name " +
+                                    "order by[applications].[update_at] desc";
+                        command.Parameters.Add("@app_name", SqlDbType.VarChar).Value = resultGetName["name"].ToString();
+                        var result = command.ExecuteReader();
+                       // Debug.Print("GetApplicationData1:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+                        while (result.Read())
+                        {
+                            ApplicationData applicationData = new ApplicationData
+                            {
+                                ApplictionName = result["name"].ToString(),
+                                ApplictionVersion = result["version"].ToString(),
+                                ApplicationId = int.Parse(result["id"].ToString())
+                            };
+                            List<FileData> fileDatas = new List<FileData>();
+                            using (SqlConnection con2 = new SqlConnection(Properties.Settings.Default.APCSProDB))
+                            {
+                                con2.Open();
+                                SqlCommand command2 = con2.CreateCommand();
+                                command2.CommandText = "select app.id as app_id,app.[name] as [app_name],app.[version] as app_version " +
+                                " ,app.update_at as app_update_at,  [file].id as [file_id], " +
+                                " [file].directory as file_directory,[file].[name] as [file_name]," +
+                                " [file].update_at as file_update_at,[file].[version] as file_version " +
+                                " ,[file].binary_id as file_binary_id " +
+                                " from  cellcon.applications as app " +
+                                " inner join cellcon.applications_file as app_file on app_file.application_id = app.id " +
+                                " inner join cellcon.files as [file] on[file].id = app_file.[file_id] " +
+                                " where app.id = @app_id";
+                                command2.Parameters.AddWithValue(@"app_id", applicationData.ApplicationId);
+                                var result2 = command2.ExecuteReader();
+                             //   Debug.Print("GetApplicationData2:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
+                                while (result2.Read())
+                                {
+                                    FileData fileData = new FileData
+                                    {
+                                        FileId = (int)result2["file_id"],
+                                        Name = (string)result2["file_name"],
+                                        Directory = (string)result2["file_directory"],
+                                        FileVersion = (string)result2["file_version"]
+                                    };
+                                    fileDatas.Add(fileData);
+                                }
+                            }
+                            applicationData.FileDataList = fileDatas;
+                            app_Data.Add(applicationData);
+                        }
+
+                    }
+                }
+            }
+           
+            Debug.Print("GetApplicationData:" + (DateTime.Now - dateTime).TotalSeconds.ToString());
             return app_Data;
         }
         private List<CellconData> GetCellconData()

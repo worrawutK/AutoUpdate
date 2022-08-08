@@ -122,16 +122,20 @@ namespace AutoUpdateProLibrary
                 {
                     return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[UpdateProgram]", updateProgramResult.Cause);
                 }
-                
+
                 //save history to DbApcsPro
+                bool IsError = false;
                 foreach (var item in datas)
                 {
-                    c_ControllerService.SaveHistoryToDb(item.MachineId,item.ApplicationSetId);
+                    if (c_ControllerService.SaveHistoryToDb(item.MachineId,item.ApplicationSetId) == false)
+                    {
+                        IsError = true;
+                    }
                 }
 
               
-
-                c_ControllerService.SaveFile(c_FileDatas, path, fileName);
+                if (!IsError)
+                    c_ControllerService.SaveFile(c_FileDatas, path, fileName);
 
                 //Start Program
                 UpdateResult updateResult = c_ControllerService.StartProgram(c_FileDatas);

@@ -137,14 +137,14 @@ namespace AutoUpdateSetting.View
                 int j = 0;
                 foreach (var item in appDatas)
                 {
-                   
-                    treeView1.Nodes[i].Nodes.Add(item.ApplictionVersion);
+                    treeView1.Nodes[i].Nodes.Add(item.ApplictionVersion, item.ApplictionVersion);
                     foreach (var fileItem in item.FileDataList)
                     {
-                        treeView1.Nodes[i].Nodes[j].Nodes.Add(fileItem.Name + ":" + fileItem.FileVersion);
-                        
+                        treeView1.Nodes[i].Nodes[j].Nodes.Add(fileItem.Name + ":" + fileItem.FileVersion, fileItem.Name + ":" + fileItem.FileVersion);
                     }
                     j++;
+                    //if (j == 1)
+                    //    treeView1.Nodes[i].Nodes[item.ApplictionVersion].Checked = true;
                 }
                 i++;
             }
