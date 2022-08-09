@@ -1,6 +1,7 @@
 ﻿using AutoUpdateProLibrary.Model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
@@ -305,9 +306,88 @@ namespace AutoUpdateProLibrary.Control
                     return new CheckUpdateResult(MethodBase.GetCurrentMethod().Name);
                 }
             }
+            ResultBase isUpdate = CheckCellconVersion(newFileDatas[0].MachineIpAddress);
+            if (isUpdate.IsPass)
+            {
+                return new CheckUpdateResult(MethodBase.GetCurrentMethod().Name);
+            }
             return new CheckUpdateResult("ไม่มีการอัพเดทโปรแกรม",false, MethodBase.GetCurrentMethod().Name);
         }
+        public ResultBase CheckCellconVersion(string cell_ip)
+        {
+            bool isUpdate = false;
+            DataTable dataTable = new DataTable();
+            List<string> machineList = new List<string>();
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString"));
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = " select mc.[machines].[name]  from mc.machines where machines.cell_ip = @cell_ip";
+                cmd.Parameters.Add("@cell_ip", SqlDbType.VarChar).Value = cell_ip;
+                cmd.Connection.Open();
+                using (SqlDataReader rd = cmd.ExecuteReader())
+                {
+                    if (rd.HasRows)
+                    {
+                        dataTable.Load(rd);
+                    }
+                }
+                cmd.Connection.Close();
 
+                foreach (DataRow item in dataTable.Rows)
+                {
+                    if (item["name"] != DBNull.Value)
+                        machineList.Add((string)item["name"]);
+                }
+            }
+
+            foreach (string mcNo in machineList)
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    cmd.Connection = new SqlConnection("Data Source = 172.16.0.102; Initial Catalog = StoredProcedureDB; Persist Security Info = True; User ID = system; Password = 'p@$$w0rd'");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "[cellcon].[sp_get_version]";
+                    cmd.Parameters.Add("@mcNo", SqlDbType.VarChar).Value = mcNo;
+                    cmd.Connection.Open();
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        if (rd.HasRows)
+                        {
+                            dataTable = new DataTable();
+                            dataTable.Load(rd);
+                        }
+                    }
+                    cmd.Connection.Close();
+                    string autoUpdateVersion = "";
+                    string processVersion = "";
+                    string programeName = "";
+                    foreach (DataRow item in dataTable.Rows)
+                    {
+                        if (item["autoupdate_version"] != DBNull.Value)
+                            autoUpdateVersion = (string)item["autoupdate_version"];
+                        if (item["process_version"] != DBNull.Value)
+                            processVersion = (string)item["process_version"];
+                        if (item["cellcon_program"] != DBNull.Value)
+                            programeName = (string)item["cellcon_program"];
+                    }
+                    //if (string.IsNullOrEmpty(processVersion))
+                    //{
+                    //    //resultBase.Cause = "ยังไม่ได้ใช้งาน auto update กรุณาติดต่อ system";
+                    //    resultBase.IsPass = true;
+                    //    return resultBase;
+                    //}
+                    if (processVersion != autoUpdateVersion)
+                    {
+                        isUpdate = true;
+                        //resultBase.IsPass = false;
+                        //resultBase.Cause = "กรุณาปิด-เปิดโปรแกรม " + programeName + " ใหม่เพื่อทำการอัพเดทเวอร์ชั่น [" + processVersion + "=>" + autoUpdateVersion + "]";
+                        //return resultBase;
+                    }
+                }
+            }
+            return new ResultBase(isUpdate,"");
+        }
         #region Save and Load Data
         public List<FileData> LoadFile(string path)
         {
