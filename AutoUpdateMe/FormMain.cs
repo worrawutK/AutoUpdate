@@ -38,7 +38,7 @@ namespace AutoUpdateMe
             {
                 Directory.CreateDirectory(path);
             }
-            using (StreamWriter sw = new StreamWriter(xmlPath, false))
+            using (StreamWriter sw = new StreamWriter(xmlPath, true))
             {
                 var bs = new XmlSerializer(data.GetType());
                 bs.Serialize(sw, data);
