@@ -13,7 +13,11 @@ namespace AutoUpdateProLibrary.Model
         {
             try
             {
-                using (StreamWriter w = new StreamWriter(path + @"\log.txt",true))
+                if(!File.Exists(path + @"\logs.txt"))
+                {
+                    File.Create(path + @"\logs.txt");
+                }
+                using (StreamWriter w = new StreamWriter(path + @"\logs.txt",true))
                 {
                     w.WriteLine(message);
                     w.Close();

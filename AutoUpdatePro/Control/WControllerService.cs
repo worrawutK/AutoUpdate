@@ -78,7 +78,7 @@ namespace AutoUpdateProLibrary.Control
             }
             catch (Exception ex)
             {
-                return null;
+                throw;
             }
           
         }
