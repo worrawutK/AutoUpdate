@@ -64,7 +64,6 @@
             // 
             // textBoxCellconVersion
             // 
-            this.textBoxCellconVersion.Enabled = false;
             this.textBoxCellconVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.textBoxCellconVersion.Location = new System.Drawing.Point(195, 74);
             this.textBoxCellconVersion.Name = "textBoxCellconVersion";

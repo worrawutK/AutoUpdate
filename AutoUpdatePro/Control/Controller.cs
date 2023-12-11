@@ -24,7 +24,7 @@ namespace AutoUpdateProLibrary
             }
         }
         private List<FileData> c_FileDatas;
-        private readonly string c_CellIp;
+        private readonly List<string> c_CellIp = new List<string>();
         public Controller()
         {
             ControllerService = CellControllerFactory.CreateInterface();
@@ -38,20 +38,27 @@ namespace AutoUpdateProLibrary
                 case "IP":
                     foreach (var address in Dns.GetHostEntry(strHostName).AddressList)
                     {
-                        if (address.ToString().Contains("172") || address.ToString().Contains("10.28"))
-                        {
-                            c_CellIp = address.ToString();
-                            break;
-                        }
+                        //if (address.ToString().Contains("172") || address.ToString().Contains("10.28"))
+                        //{
+                        //    c_CellIp.Add(address.ToString());
+                        //   // break;
+                        //}
+                        if(address.ToString().Split('.').Length == 4)
+                        c_CellIp.Add(address.ToString());
                     }
-                    if (string.IsNullOrEmpty(c_CellIp))
-                        MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "กรุณาตรวจสอบการเชี่ยมต่อของ Network", "");
+                    if (c_CellIp.Count == 0)
+                        MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "Please Check Network", "");
                     break;
+                //if (string.IsNullOrEmpty(c_CellIp.Count == 0))
+                //    MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "กรุณาตรวจสอบการเชี่ยมต่อของ Network", "");
+                //break;
                 case "NAME":
-                    c_CellIp = strHostName;
+                    //c_CellIp = strHostName;
+                    c_CellIp.Add(strHostName);
                     break;
                 case "MANUAL":
-                    c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
+                    //c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
+                    c_CellIp.Add(AppSettingHelper.GetAppSettingsValue("CellConIp"));
                     break;
             }
           
@@ -66,8 +73,14 @@ namespace AutoUpdateProLibrary
                 string pathBackpup = Path.Combine(Directory.GetCurrentDirectory(), "Backup");
                 c_FileDatas = c_ControllerService.LoadFile(Path.Combine(path, fileName));
 
-                
-                List<FileDataInfo> newFileInfo = c_ControllerService.GetFilesInfo(c_CellIp);
+
+                List<FileDataInfo> newFileInfo = null;
+                foreach (string ip in c_CellIp)
+                {
+                    newFileInfo = c_ControllerService.GetFilesInfo(ip);
+                    if (newFileInfo != null)
+                        break;
+                }
 
                 //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
                 var datas = newFileInfo.Select(x => new { x.ApplicationSetId,x.MachineId }).Distinct().ToList();

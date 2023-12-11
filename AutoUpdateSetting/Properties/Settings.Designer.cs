@@ -12,7 +12,7 @@ namespace AutoUpdateSetting.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,8 +26,8 @@ namespace AutoUpdateSetting.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=172.16.0.110;Initial Catalog=APCSProDB;Persist Security Info=True;Use" +
-            "r ID=apcsuser;Password=apcsuser")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=110.25.254.31;Initial Catalog=APCSProDB;Persist Security Info=True;Us" +
+            "er ID=system;Password=p@$$w0rd")]
         public string APCSProDB {
             get {
                 return ((string)(this["APCSProDB"]));

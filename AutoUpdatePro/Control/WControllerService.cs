@@ -345,9 +345,9 @@ namespace AutoUpdateProLibrary.Control
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.Connection = new SqlConnection("Data Source = 172.16.0.102; Initial Catalog = StoredProcedureDB; Persist Security Info = True; User ID = system; Password = 'p@$$w0rd'");
+                    cmd.Connection = new SqlConnection(AppSettingHelper.GetConnectionStringValue("ApcsProConnectionString"));
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "[cellcon].[sp_get_version]";
+                    cmd.CommandText = "StoredProcedureDB.[cellcon].[sp_get_version]";
                     cmd.Parameters.Add("@mcNo", SqlDbType.VarChar).Value = mcNo;
                     cmd.Connection.Open();
                     using (SqlDataReader rd = cmd.ExecuteReader())
