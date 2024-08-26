@@ -106,9 +106,14 @@ namespace AutoUpdateProLibrary
                     }
                 }
                 Log.WriteMessage("PingHost:ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") + " ได้");
-                c_SynchronizationContext.Post(x => this.ShowMessage("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
-                    " ได้", "AutoUpdate"), null);
-
+                c_SynchronizationContext.Post(x =>
+                {
+                 //   this.ShowMessage("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
+                 //" ได้", "AutoUpdate");
+                    ConfirmCloseProgram("PingHost:ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") + " ได้");
+                }
+               , null);
+              
                 //MessageBoxDialog.ShowMessageDialog("PingHost", "ไม่สามารถเข้าถึง " + AppSettingHelper.GetAppSettingsValue("ServerIP") +
                 //    " ได้", "AutoUpdate");
             }
