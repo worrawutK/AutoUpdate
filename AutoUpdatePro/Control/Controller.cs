@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using System.Net;
+using System.Windows.Forms;
 
 namespace AutoUpdateProLibrary
 {
@@ -47,7 +48,8 @@ namespace AutoUpdateProLibrary
                         c_CellIp.Add(address.ToString());
                     }
                     if (c_CellIp.Count == 0)
-                        MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "Please Check Network", "");
+                        MessageBox.Show("GetIpAddress:Please Check Network");
+                       // MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "Please Check Network", "");
                     break;
                 //if (string.IsNullOrEmpty(c_CellIp.Count == 0))
                 //    MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "กรุณาตรวจสอบการเชี่ยมต่อของ Network", "");

@@ -8,7 +8,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using MessageDialog;
+//using MessageDialog;
 using AutoUpdateProLibrary.Model;
 using System.Configuration;
 using System.Diagnostics;
@@ -120,8 +120,8 @@ namespace AutoUpdateProLibrary
             catch (Exception ex)
             {
                 Log.WriteMessage("UpdateFile:" + ex.Message.ToString());
-                c_SynchronizationContext.Post(x => this.ShowMessage("UpdateFile", ex.Message.ToString(), "Exception"), null);
-
+                //    c_SynchronizationContext.Post(x => this.ShowMessage("UpdateFile", ex.Message.ToString(), "Exception"), null);
+                MessageBox.Show("Exception:" + ex.Message);
             }
 
 
@@ -129,7 +129,7 @@ namespace AutoUpdateProLibrary
         }
         private void ShowMessage(string title, string message, string messageType)
         {
-            MessageBoxDialog.ShowMessageDialog(title, message, messageType);
+            //MessageBoxDialog.ShowMessageDialog(title, message, messageType);
         }
         private void ConfirmCloseProgram(string message)
         {
