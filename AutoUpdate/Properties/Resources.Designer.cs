@@ -19,7 +19,7 @@ namespace AutoUpdate.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,16 +63,6 @@ namespace AutoUpdate.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _1519081590_tumblr_n6kholb70q1sd011wo1_1280 {
-            get {
-                object obj = ResourceManager.GetObject("1519081590_tumblr_n6kholb70q1sd011wo1_1280", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap giphy__3_ {
             get {
                 object obj = ResourceManager.GetObject("giphy (3)", resourceCulture);
@@ -86,16 +76,6 @@ namespace AutoUpdate.Properties {
         internal static System.Drawing.Bitmap Loading_please_wait {
             get {
                 object obj = ResourceManager.GetObject("Loading_please_wait", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap preload_waiting {
-            get {
-                object obj = ResourceManager.GetObject("preload_waiting", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

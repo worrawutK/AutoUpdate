@@ -112,7 +112,7 @@ namespace AutoUpdateSetting
 
         private void PictureBoxSaveToDbx_Click(object sender, EventArgs e)
         {
-            if (InsertDataToDbx(c_FileDatas))
+            if (InsertDataToDbx(c_FileDatas) && c_FileDatas.Count != 0)
             {
                 MessageBoxDialog.ShowMessageDialog("Manage Files", "Save Succeed", "Succeed");
                 this.DialogResult = DialogResult.OK;

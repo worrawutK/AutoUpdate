@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Icons-Land-Vista-Hardware-Devices-Hardware-Chip.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MessageDialog">
       <HintPath>Dll\MessageDialog.dll</HintPath>
@@ -49,11 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageDialog.Designer.cs">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\ApplicationData.cs" />
     <Compile Include="Model\CellconData.cs" />
     <Compile Include="Model\CloningUitility.cs" />
     <Compile Include="Model\FileData.cs" />
     <Compile Include="Model\MachineData.cs" />
+    <Compile Include="Model\ProgramData.cs" />
     <Compile Include="Model\SetDataResult.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -92,6 +102,30 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\ManageApplication.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ManageApplication.Designer.cs">
+      <DependentUpon>ManageApplication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManageCellcon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ManageCellcon.Designer.cs">
+      <DependentUpon>ManageCellcon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManageFiles.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ManageFiles.Designer.cs">
+      <DependentUpon>ManageFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManageMachines.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\ManageMachines.Designer.cs">
+      <DependentUpon>ManageMachines.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\RegisterProgramCellconForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +164,18 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="View\ManageApplication.resx">
+      <DependentUpon>ManageApplication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ManageCellcon.resx">
+      <DependentUpon>ManageCellcon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ManageFiles.resx">
+      <DependentUpon>ManageFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\ManageMachines.resx">
+      <DependentUpon>ManageMachines.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\RegisterProgramCellconForm.resx">
       <DependentUpon>RegisterProgramCellconForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,6 +213,7 @@
     <None Include="Resources\add_file_cursor.gif" />
     <None Include="Resources\exitProgram.gif" />
     <None Include="Resources\exitProgram_cursor.gif" />
+    <Content Include="Icons-Land-Vista-Hardware-Devices-Hardware-Chip.ico" />
     <Content Include="Resources\backgrond_horizontal.gif" />
     <None Include="Resources\background_blue_01.gif" />
     <Content Include="Resources\background_main.gif" />

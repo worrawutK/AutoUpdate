@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rohm.Common.Logging;
 namespace AutoUpdateProLibrary.Model
 {
     public class UpdateFileResult
@@ -19,16 +18,16 @@ namespace AutoUpdateProLibrary.Model
         //{
 
         //}
-        public UpdateFileResult(bool isPass,string cause,Logger log, string functionName, string subFunctionName)
+        public UpdateFileResult(string functionName,string cause)
         {
-            this.IsPass = isPass;
+            this.IsPass = false;
             this.Cause = cause;
-            string typeState = "Error";
-            if (IsPass)
-            {
-                typeState = "Normal";
-            }
-            log.OperationLogger.Write(0, functionName, typeState, "", "", 0, subFunctionName, cause, "");
+            Log.WriteMessage(functionName + "|" + cause);
+        }
+        public UpdateFileResult(string functionName)
+            :this(functionName,"OK")
+        {
+            this.IsPass = true;
         }
     }
 }

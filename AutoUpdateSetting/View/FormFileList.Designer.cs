@@ -48,7 +48,7 @@
             this.listBoxFileList.ItemHeight = 20;
             this.listBoxFileList.Location = new System.Drawing.Point(312, 87);
             this.listBoxFileList.Name = "listBoxFileList";
-            this.listBoxFileList.Size = new System.Drawing.Size(202, 304);
+            this.listBoxFileList.Size = new System.Drawing.Size(246, 304);
             this.listBoxFileList.TabIndex = 1;
             // 
             // listBoxProgramName
@@ -67,9 +67,9 @@
             // 
             this.pictureBoxSelect.BackColor = System.Drawing.Color.Transparent;
             this.pictureBoxSelect.Image = global::AutoUpdateSetting.Properties.Resources.button_select;
-            this.pictureBoxSelect.Location = new System.Drawing.Point(22, 402);
+            this.pictureBoxSelect.Location = new System.Drawing.Point(22, 397);
             this.pictureBoxSelect.Name = "pictureBoxSelect";
-            this.pictureBoxSelect.Size = new System.Drawing.Size(187, 51);
+            this.pictureBoxSelect.Size = new System.Drawing.Size(246, 64);
             this.pictureBoxSelect.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxSelect.TabIndex = 5;
             this.pictureBoxSelect.TabStop = false;
@@ -83,7 +83,7 @@
             this.pictureBox1.Image = global::AutoUpdateSetting.Properties.Resources.background_blue_01;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(535, 466);
+            this.pictureBox1.Size = new System.Drawing.Size(584, 470);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
@@ -116,9 +116,9 @@
             // 
             this.pictureBoxCancel.BackColor = System.Drawing.Color.Transparent;
             this.pictureBoxCancel.Image = global::AutoUpdateSetting.Properties.Resources.button_Cancel;
-            this.pictureBoxCancel.Location = new System.Drawing.Point(349, 403);
+            this.pictureBoxCancel.Location = new System.Drawing.Point(312, 397);
             this.pictureBoxCancel.Name = "pictureBoxCancel";
-            this.pictureBoxCancel.Size = new System.Drawing.Size(165, 50);
+            this.pictureBoxCancel.Size = new System.Drawing.Size(246, 64);
             this.pictureBoxCancel.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxCancel.TabIndex = 18;
             this.pictureBoxCancel.TabStop = false;
@@ -142,7 +142,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(535, 466);
+            this.ClientSize = new System.Drawing.Size(584, 470);
+            this.ControlBox = false;
             this.Controls.Add(this.listBoxFileList);
             this.Controls.Add(this.pictureBoxCancel);
             this.Controls.Add(this.labelHeader);
@@ -151,10 +152,10 @@
             this.Controls.Add(this.labelFileName);
             this.Controls.Add(this.pictureBoxSelect);
             this.Controls.Add(this.pictureBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormFileList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FormFileList";
+            this.Text = "Sarver File";
             this.Load += new System.EventHandler(this.FormFileList_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSelect)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

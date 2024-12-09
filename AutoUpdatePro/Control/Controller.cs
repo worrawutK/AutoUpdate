@@ -6,8 +6,10 @@ using System.Net.NetworkInformation;
 using System.Timers;
 using AutoUpdateProLibrary.Model;
 using System.IO;
-using Rohm.Common.Logging;
 using System.Reflection;
+using System.Diagnostics;
+using System.Net;
+using System.Windows.Forms;
 
 namespace AutoUpdateProLibrary
 {
@@ -23,89 +25,146 @@ namespace AutoUpdateProLibrary
             }
         }
         private List<FileData> c_FileDatas;
-        private readonly Logger c_Log;
-        private readonly string c_CellIp;
+        private readonly List<string> c_CellIp = new List<string>();
         public Controller()
         {
             ControllerService = CellControllerFactory.CreateInterface();
-            c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
             c_FileDatas = new List<FileData>();
-            c_Log = new Logger("1.0.00", c_CellIp);
+
+            //Get IP Cellcon
+            string GetMachineBy = AppSettingHelper.GetAppSettingsValue("GetMachineBy").Trim().ToUpper();
+            string strHostName = Dns.GetHostName();
+            switch (GetMachineBy)
+            {
+                case "IP":
+                    foreach (var address in Dns.GetHostEntry(strHostName).AddressList)
+                    {
+                        //if (address.ToString().Contains("172") || address.ToString().Contains("10.28"))
+                        //{
+                        //    c_CellIp.Add(address.ToString());
+                        //   // break;
+                        //}
+                        if(address.ToString().Split('.').Length == 4)
+                        c_CellIp.Add(address.ToString());
+                    }
+                    if (c_CellIp.Count == 0)
+                        MessageBox.Show("GetIpAddress:Please Check Network");
+                       // MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "Please Check Network", "");
+                    break;
+                //if (string.IsNullOrEmpty(c_CellIp.Count == 0))
+                //    MessageDialog.MessageBoxDialog.ShowMessage("GetIpAddress", "กรุณาตรวจสอบการเชี่ยมต่อของ Network", "");
+                //break;
+                case "NAME":
+                    //c_CellIp = strHostName;
+                    c_CellIp.Add(strHostName);
+                    break;
+                case "MANUAL":
+                    //c_CellIp = AppSettingHelper.GetAppSettingsValue("CellConIp");
+                    c_CellIp.Add(AppSettingHelper.GetAppSettingsValue("CellConIp"));
+                    break;
+            }
+          
         }
         public UpdateFileResult UpdateFile()
         {
             try
             {
+              //  DateTime dateTime = DateTime.Now;
                 string path = Directory.GetCurrentDirectory();// @"";
                 string fileName = "ProgramData.xml";
                 string pathBackpup = Path.Combine(Directory.GetCurrentDirectory(), "Backup");
                 c_FileDatas = c_ControllerService.LoadFile(Path.Combine(path, fileName));
 
 
-                List<FileData> newFileDatas = c_ControllerService.GetFiles(c_CellIp);
-
-                //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
-                var data = newFileDatas.Select(x => new { x.ApplicationSetId }).Distinct().ToList();
-                if (data.Count > 1)
+                List<FileDataInfo> newFileInfo = null;
+                foreach (string ip in c_CellIp)
                 {
-                    return new UpdateFileResult(false,"โปรแกรม Machine ไม่ตรงกัน กรุณาติดต่อ System เพื่อเช็คโปรแกรมของ Machine  \nCellconIP:" + AppSettingHelper.GetAppSettingsValue("CellConIp"), c_Log, MethodBase.GetCurrentMethod().Name, "GetFiles");
-                }else if (data.Count == 0)
-                {
-                    return new UpdateFileResult(false, "Cellcon Ip:" + c_CellIp + " ยังไม่ได้ถูก Set Machine ไว้ กรุณาติดต่อ System ", c_Log, MethodBase.GetCurrentMethod().Name, "GetFiles");
+                    newFileInfo = c_ControllerService.GetFilesInfo(ip);
+                    if (newFileInfo != null)
+                        break;
                 }
 
-                //เลือกใช้โปรแกรมของ Machine เดียว *โปรแกรมแต่ละเครื่องเหมือนกัน
-                var programMachine = newFileDatas.Select(x => x.MachineId).Distinct().ToList();
-                var programCellcon = newFileDatas.Where(x => x.MachineId == programMachine[0]).ToList();
-
-                CheckUpdateResult checkUpdateResult = c_ControllerService.CheckUpdate(programCellcon, c_FileDatas);
+                //ตรวจสอบโปรแกรมของแต่ละเครื่องว่าเหมือนกันหรือไม่ กรณี 1:N
+                var datas = newFileInfo.Select(x => new { x.ApplicationSetId,x.MachineId }).Distinct().ToList();
+                var application = datas.Select(x => new { x.ApplicationSetId }).Distinct().ToList();
+                if (application.Count > 1)
+                {
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[application]", "โปรแกรม Machine ไม่ตรงกัน กรุณาติดต่อ System เพื่อเช็คโปรแกรมของ Machine  \nCellconIP:" + AppSettingHelper.GetAppSettingsValue("CellConIp"));
+                }else if (datas.Count == 0)
+                {
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[datas]", "Cellcon Ip:" + c_CellIp + " ยังไม่ได้ถูก Set Machine ไว้ กรุณาติดต่อ System ");
+                }
+                ////เลือกใช้โปรแกรมของ Machine เดียว *โปรแกรมแต่ละเครื่องเหมือนกัน
+                //var programMachine = newFileInfo.Select(x => x.MachineId).Distinct().ToList();
+                //var programCellcon = newFileInfo.Where(x => x.MachineId == programMachine[0]).ToList();
+               
+                CheckUpdateResult checkUpdateResult = c_ControllerService.CheckUpdate(newFileInfo, c_FileDatas);
                 if (!checkUpdateResult.IsUpdate)
                 {
                     if (c_FileDatas == null)
                     {
-                        return new UpdateFileResult(false, checkUpdateResult.Cause, c_Log, MethodBase.GetCurrentMethod().Name, checkUpdateResult.SubFunctionName);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[c_FileDatas is null]", checkUpdateResult.Cause);
                     }
                     //Start Program
                     c_ControllerService.StartProgram(c_FileDatas);
                     if (checkUpdateResult.IsAlarm)
                     {
-                        return new UpdateFileResult(false, checkUpdateResult.Cause, c_Log, 
-                            MethodBase.GetCurrentMethod().Name, checkUpdateResult.SubFunctionName);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[StartProgram]", checkUpdateResult.Cause);
                     }
-                    return new UpdateFileResult(true, "", c_Log, MethodBase.GetCurrentMethod().Name,
-                        checkUpdateResult.SubFunctionName);
+                    //Debug.Print("Not Update:" + (DateTime.Now - dateTime).ToString());
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
                 }
-
-                //Backup File
+               
+                //Debug.Print("Before GetFiles:" + (DateTime.Now - dateTime).ToString());
+                List<FileData> newFileData = c_ControllerService.GetFiles((application.FirstOrDefault()).ApplicationSetId);
+                //Debug.Print("After GetFiles:" + (DateTime.Now - dateTime).ToString());
+                //Backup Old File
                 if (!(c_FileDatas == null || c_FileDatas.Count == 0))
                 {
                     SaveFileResult saveFileResult = c_ControllerService.SaveFile(c_FileDatas, pathBackpup, fileName);
                     if (!saveFileResult.IsPass)
                     {
-                        return new UpdateFileResult(saveFileResult.IsPass, saveFileResult.Cause, c_Log, MethodBase.GetCurrentMethod().Name, saveFileResult.SubFunctionName);
+                        return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[SaveFile]", saveFileResult.Cause);
                     }
                 }
-                c_FileDatas = programCellcon;
+                
+                c_FileDatas = newFileData;
                 //Coppy new file to old file (Replete)
+                //Debug.Print("Before UpdateProgram:" + (DateTime.Now - dateTime).ToString());
                 UpdateProgramResult updateProgramResult = c_ControllerService.UpdateProgram(c_FileDatas);
+                //Debug.Print("After UpdateProgram:" + (DateTime.Now - dateTime).ToString());
                 if (!updateProgramResult.IsPass)
                 {
-                    return new UpdateFileResult(false, updateProgramResult.Cause, c_Log, MethodBase.GetCurrentMethod().Name, updateProgramResult.SubFunctionName);
+                    return new UpdateFileResult(MethodBase.GetCurrentMethod().Name + "[UpdateProgram]", updateProgramResult.Cause);
                 }
+
+                //save history to DbApcsPro
+                bool IsError = false;
+                foreach (var item in datas)
+                {
+                    if (c_ControllerService.SaveHistoryToDb(item.MachineId,item.ApplicationSetId) == false)
+                    {
+                        IsError = true;
+                    }
+                }
+
               
-                c_ControllerService.SaveFile(c_FileDatas, path, fileName);
+                if (!IsError)
+                    c_ControllerService.SaveFile(c_FileDatas, path, fileName);
 
                 //Start Program
                 UpdateResult updateResult = c_ControllerService.StartProgram(c_FileDatas);
-
-                return new UpdateFileResult(true, "", c_Log, MethodBase.GetCurrentMethod().Name, "");
+                //Debug.Print("Update:" + (DateTime.Now - dateTime).ToString());
+                
+                return new UpdateFileResult(MethodBase.GetCurrentMethod().Name);
             }
             catch (Exception ex)
             {
-                return new UpdateFileResult(false, ex.Message.ToString(), c_Log, MethodBase.GetCurrentMethod().Name, "Exception");
+                return new UpdateFileResult(MethodBase.GetCurrentMethod().Name, ex.Message.ToString());
             }
             
         }
+        
         //private List<Model.ApplicationCellcon> GetFile(string path)
         //{
           
